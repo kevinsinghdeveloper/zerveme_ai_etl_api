@@ -9,11 +9,11 @@ class IWebServiceManager:
         self.__web_config = web_config
 
     @abstractmethod
-    def rest_get(self, parameter: ParameterModel) -> Union[List[ResponseModel] | None]:
+    def get(self, parameter: ParameterModel) -> Union[List[ResponseModel] | None]:
         pass
 
     @abstractmethod
-    def rest_put(self, parameter: ParameterModel):
+    def put(self, parameter: ParameterModel):
         pass
 
     # tokens etc?

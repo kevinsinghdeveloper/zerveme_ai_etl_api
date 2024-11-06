@@ -1,0 +1,7 @@
+{
+  "dev": {
+    "api_key": "",
+    "engine": "google_shopping",
+    "google_domain": "google.com"
+  }
+}
