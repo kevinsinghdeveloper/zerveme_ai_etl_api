@@ -7,8 +7,8 @@ from abstractions.models import EntityResource, ParameterModel
 
 
 class RecSysResourceManager(IResourceManager):
-    def __init__(self, web_service_manager: IWebServiceManager):
-        super().__init__(web_service_manager)
+    def __init__(self, serp_service_manager: IWebServiceManager):
+        super().__init__(serp_service_manager)
 
     def create(self) -> EntityResource:  # we need an entity base model -> return id?
         pass

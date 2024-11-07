@@ -5,8 +5,8 @@ from abstractions.models import ResponseModel, ParameterModel
 
 
 class IWebServiceManager:
-    def __init__(self, web_config):
-        self.__web_config = web_config
+    def __init__(self, api_config: dict):
+        self.__api_config = api_config
 
     @abstractmethod
     def get(self, parameter: ParameterModel) -> Union[List[ResponseModel] | None]:
