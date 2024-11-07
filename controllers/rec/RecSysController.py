@@ -19,6 +19,7 @@ class RecSysController(IController):
 
 
     def get_related_products(self):
+        # TODO add data class for response and request -> I tjink parameter is too generic
         print("test")
         pass
 

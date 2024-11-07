@@ -1,11 +1,24 @@
 {
-  "dev": {
-    "api_base_url": "https://api.valueserp.com",
-    "api_key": "524F47924BDA4FEBBBCCDA6EE2F869E4",
-    "search_api_path": "/search",
-    "params_config": {
-    "api_key_keyword": "api_key",
-    "query_keyword": "q"
-    }
+    "api_base_url": "https://api.valueserp.com/search",
+      "api_filters": {
+        "api_key": "",
+        "search_type":"shopping",
+        "hl":"en",
+        "gl":"us"
+      },
+      "query_keyword": "q",
+      "result_config": {
+        "return_object_key": "shopping_results",
+        "nested_keys_to_use": {
+          "title": "title",
+          "product_id": "id",
+          "url": "link",
+          "merchant": "merchant",
+          "price": "price_raw",
+          "position_rank": "position",
+          "rating": "rating",
+          "reviews": "reviews"
+        }
+
+      }
   }
-}

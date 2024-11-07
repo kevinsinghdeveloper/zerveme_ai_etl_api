@@ -8,12 +8,15 @@ from utility.Utility import Utility
 app = Flask(__name__)
 
 api_config = Utility.read_in_json_file("configs/serp_config.json")
+
 # setup services and controllers
 serp_api_manager = SerpServiceManager(api_config=api_config)
 
 rec_sys_resource_manager = RecSysResourceManager(serp_api_manager)
 
 rec_sys_controller = RecSysController(app, rec_sys_resource_manager)
+
+# register controllers
 rec_sys_controller.register_all_routes()
 
 def run_web_service():
