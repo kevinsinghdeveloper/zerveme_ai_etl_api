@@ -21,6 +21,7 @@ class RecSysResourceManager(IResourceManager):
         best_items = []
         same_product_lower_price = self.__rec_eng_mngr.find_same_product(
             source_product_name=request_resource_model.product_title,
+            related_product_name_field="product_title",
             related_products=serp_data_items,
             price_difference_range=None  #default to just finding any at lower (use lowest)
         )
@@ -30,6 +31,7 @@ class RecSysResourceManager(IResourceManager):
         related_product_tier_1 = self.__rec_eng_mngr.find_related_product(
             source_product_name=request_resource_model.product_title,
             related_products=serp_data_items,
+            related_product_name_field="product_title",
             price_difference_range=(.2, .35)
         )
         if related_product_tier_1:
@@ -38,6 +40,7 @@ class RecSysResourceManager(IResourceManager):
         related_product_tier_2 = self.__rec_eng_mngr.find_related_product(
             source_product_name=request_resource_model.product_title,
             related_products=serp_data_items,
+            related_product_name_field="product_title",
             price_difference_range=(.35, .5)  # default to just finding any at lower (use lowest)
         )
         if related_product_tier_2:
