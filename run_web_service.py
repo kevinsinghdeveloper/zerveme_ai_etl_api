@@ -12,9 +12,10 @@ app = Flask(__name__)
 
 api_config = Utility.read_in_json_file("configs/serp_config.json")
 
-# setup services and controllers
+# setup services
 serp_api_manager = SerpServiceManager(api_config=api_config)
 
+# setup managers
 rec_sys_resource_manager = RecSysResourceManager(serp_api_manager)
 auth_resource_manager = AuthenticationResourceManager()
 
@@ -31,6 +32,4 @@ if __name__ == '__main__':
     run_web_service()
 
 # TODO
-#   fix interfaces, not strict as c#
-#   setup and complete resource manager with request to serp
 #   add finishing pieces to rec -> we should manager a model, which will become a table

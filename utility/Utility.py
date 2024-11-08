@@ -2,11 +2,13 @@ import json
 import logging
 import os
 import io
+from dataclasses import is_dataclass, asdict
 from datetime import datetime
-from typing import Dict, Any
+from typing import Dict, Any, TypeVar, List
 import re
+import pandas as pd
 
-
+T = TypeVar("T")
 class Utility:
     logger = logging.getLogger(__name__)
     logger.setLevel(logging.DEBUG)  # Set default logging level to DEBUG
@@ -116,3 +118,20 @@ class Utility:
         except ValueError:
             # Return 0 if the conversion fails
             return 0
+
+    @staticmethod
+    def dataclass_to_dataframe(dataclass_list: List[T]) -> pd.DataFrame:
+        # Check if the list is empty
+        if not dataclass_list:
+            return pd.DataFrame()
+
+        # Ensure the first element is a dataclass
+        if not is_dataclass(dataclass_list[0]):
+            raise ValueError("The provided list must contain dataclass instances.")
+
+        # Convert list of dataclasses to list of dictionaries
+        dict_list = [asdict(item) for item in dataclass_list]
+
+        # Create a DataFrame from the list of dictionaries
+        df = pd.DataFrame(dict_list)
+        return df

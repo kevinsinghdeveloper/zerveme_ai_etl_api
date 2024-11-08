@@ -8,7 +8,6 @@ from managers.auth.AuthenticationResourceManager import AuthenticationResourceMa
 from managers.rec.RecSysResourceManager import RecSysResourceManager
 
 
-
 class AuthenticationController(IController):
     def __init__(self, app: Flask, resource_manager: AuthenticationResourceManager):
         super().__init__(app, resource_manager)
