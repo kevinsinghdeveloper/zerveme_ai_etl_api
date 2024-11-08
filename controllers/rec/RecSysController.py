@@ -7,6 +7,7 @@ from abstractions.IController import IController
 from abstractions.IResourceManager import IResourceManager
 from managers.rec.RecSysResourceManager import RecSysResourceManager
 from models.request.RecRequestResourceModel import RecRequestResourceModel
+from utility.Utility import Utility
 
 
 class RecSysController(IController):
@@ -22,7 +23,8 @@ class RecSysController(IController):
     def get_related_products(self):
         request_model = RecRequestResourceModel(
             product_title=request.args["product_name"],
-            #web_site=request.args["web_site"]
+            web_site=request.args["web_site"],
+            product_price=Utility.clean_and_convert(request.args.get("price", 0))
         )
 
         data_response = self._resource_manager.get(request_model)
