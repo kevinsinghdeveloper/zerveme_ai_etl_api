@@ -1,7 +1,7 @@
 {
     "api_base_url": "https://api.valueserp.com/search",
       "api_filters": {
-        "api_key": "",
+        "api_key": "524F47924BDA4FEBBBCCDA6EE2F869E4",
         "search_type":"shopping",
         "hl":"en",
         "gl":"us"
