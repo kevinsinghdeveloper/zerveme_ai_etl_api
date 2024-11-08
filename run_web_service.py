@@ -1,7 +1,9 @@
 from flask import Flask, request, jsonify
 
+from controllers.auth.AuthenticationController import AuthenticationController
 from controllers.rec.RecSysController import RecSysController
 from managers.SerpServiceManager import SerpServiceManager
+from managers.auth.AuthenticationResourceManager import AuthenticationResourceManager
 from managers.rec.RecSysResourceManager import RecSysResourceManager
 from utility.Utility import Utility
 
@@ -14,11 +16,14 @@ api_config = Utility.read_in_json_file("configs/serp_config.json")
 serp_api_manager = SerpServiceManager(api_config=api_config)
 
 rec_sys_resource_manager = RecSysResourceManager(serp_api_manager)
+auth_resource_manager = AuthenticationResourceManager()
 
 rec_sys_controller = RecSysController(app, rec_sys_resource_manager)
+auth_controller = AuthenticationController(app, auth_resource_manager)
 
 # register controllers
 rec_sys_controller.register_all_routes()
+auth_controller.register_all_routes()
 
 
 def run_web_service():

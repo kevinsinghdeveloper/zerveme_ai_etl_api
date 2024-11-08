@@ -19,17 +19,13 @@ class RecSysController(IController):
                             self.get_related_products,
                             "GET")
 
-    def get_resource_manager(self):
-        return cast(RecSysResourceManager, self._resource_manager)
-
     def get_related_products(self):
         request_model = RecRequestResourceModel(
             product_title=request.args["product_name"],
             #web_site=request.args["web_site"]
         )
 
-        res_mng = self.get_resource_manager()
-        data_response = res_mng.get(request_model)
+        data_response = self._resource_manager.get(request_model)
 
         return data_response
 
