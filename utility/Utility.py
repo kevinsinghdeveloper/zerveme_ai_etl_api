@@ -100,7 +100,9 @@ class Utility:
         return trimmed_string
 
     @staticmethod
-    def clean_and_convert(value: str) -> float | int:
+    def clean_and_convert(value: any) -> float | int:
+        if type(value) in [int, float]:
+            return value
         # Use regex to keep only digits, a single dot, and an optional leading minus sign
         cleaned_value = re.sub(r"[^\d.-]", "", value)
 
