@@ -22,3 +22,4 @@ class RecommendationEngineManager:
 
         # price_difference_range -> .3 to .6 (30 - 60 % diff)
         pass
+
