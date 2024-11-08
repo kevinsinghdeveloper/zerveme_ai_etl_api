@@ -1,6 +1,7 @@
+from dataclasses import asdict
 from typing import cast
 
-from flask import Flask, request
+from flask import Flask, request, jsonify
 
 from abstractions.IController import IController
 from abstractions.IResourceManager import IResourceManager
@@ -22,13 +23,13 @@ class RecSysController(IController):
         return cast(RecSysResourceManager, self._resource_manager)
 
     def get_related_products(self):
-        # TODO add data class for response and request -> I think parameter is too generic
         request_model = RecRequestResourceModel(
-            product_name=request.args["product_name"]
+            product_title=request.args["product_name"],
+            #web_site=request.args["web_site"]
         )
 
         res_mng = self.get_resource_manager()
-        res_mng.get(request_model) # we can probably still pass in a model resource_model -> we can define
-        print("test", request.args) # we can extract the fields here and store in a model
-        pass
+        data_response = res_mng.get(request_model)
+
+        return data_response
 

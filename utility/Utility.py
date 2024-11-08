@@ -4,6 +4,8 @@ import os
 import io
 from datetime import datetime
 from typing import Dict, Any
+import re
+
 
 class Utility:
     logger = logging.getLogger(__name__)
@@ -96,3 +98,19 @@ class Utility:
         # Split the string into words and join them with a single space
         trimmed_string = ' '.join(input_string.split())
         return trimmed_string
+
+    @staticmethod
+    def clean_and_convert(value: str) -> float | int:
+        # Use regex to keep only digits, a single dot, and an optional leading minus sign
+        cleaned_value = re.sub(r"[^\d.-]", "", value)
+
+        # Handle edge cases where the string is empty or invalid (e.g., just a dot/minus sign)
+        if not cleaned_value or cleaned_value in {"-", "."}:
+            return 0
+
+        try:
+            # Convert to int if there's no decimal point, otherwise convert to float
+            return int(cleaned_value) if "." not in cleaned_value else float(cleaned_value)
+        except ValueError:
+            # Return 0 if the conversion fails
+            return 0

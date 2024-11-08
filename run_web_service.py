@@ -19,6 +19,8 @@ rec_sys_controller = RecSysController(app, rec_sys_resource_manager)
 
 # register controllers
 rec_sys_controller.register_all_routes()
+
+
 def run_web_service():
     app.run(host='0.0.0.0', port=1234)
 
@@ -27,7 +29,6 @@ if __name__ == '__main__':
     run_web_service()
 
 # TODO
-#   Adjust model to match the config, title etc.
 #   fix interfaces, not strict as c#
 #   setup and complete resource manager with request to serp
 #   add finishing pieces to rec -> we should manager a model, which will become a table

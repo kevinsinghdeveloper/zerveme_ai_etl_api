@@ -8,9 +8,9 @@
       },
       "query_keyword": "q",
       "result_config": {
-        "return_object_key": "shopping_results",
+        "related_shopping_items": "shopping_results",
         "nested_keys_to_use": {
-          "title": "title",
+          "product_title": "title",
           "product_id": "id",
           "url": "link",
           "merchant": "merchant",

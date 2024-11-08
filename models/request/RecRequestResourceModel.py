@@ -6,4 +6,5 @@ from abstractions.models.RequestResourceModel import RequestResourceModel
 
 @dataclass
 class RecRequestResourceModel(RequestResourceModel):
-    product_name: Optional[str]
+    product_title: Optional[str]
+    #web_site: Optional[str]
