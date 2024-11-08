@@ -43,6 +43,8 @@ class SerpServiceManager(IWebServiceManager):
         api_result = api_result.json()
 
         related_shopping_items_key = self._api_config['result_config']["related_shopping_items"]
+        nested_keys_to_use = self._api_config['result_config']["nested_keys_to_use"]
+
         related_shopping_items = api_result[related_shopping_items_key]
 
         if len(related_shopping_items) == 0:
@@ -52,14 +54,14 @@ class SerpServiceManager(IWebServiceManager):
         serp_response_items = []
         for item in related_shopping_items:
             serp_response = SerpResponseModel(
-                product_title=item.get('title', None),
-                product_id=item.get('id', None),
-                url=item.get('link', None),
-                merchant=item.get('merchant', None),
-                price=Utility.clean_and_convert(item.get('price_raw', 0)),
-                position_rank=Utility.clean_and_convert(item.get('position_rank', 0)),
-                rating=Utility.clean_and_convert(item.get('rating', 0)),
-                reviews=Utility.clean_and_convert(item.get('reviews', 0)),
+                product_title=item.get(nested_keys_to_use['product_title'], None),
+                product_id=item.get(nested_keys_to_use['product_id'], None),
+                url=item.get(nested_keys_to_use['url'], None),
+                merchant=item.get(nested_keys_to_use['merchant'], None),
+                price=Utility.clean_and_convert(item.get(nested_keys_to_use['price'], 0)),
+                position_rank=Utility.clean_and_convert(item.get(nested_keys_to_use['position_rank'], 0)),
+                rating=Utility.clean_and_convert(item.get(nested_keys_to_use['rating'], 0)),
+                reviews=Utility.clean_and_convert(item.get(nested_keys_to_use['reviews'], 0)),
             )
 
             serp_response_items.append(serp_response)
