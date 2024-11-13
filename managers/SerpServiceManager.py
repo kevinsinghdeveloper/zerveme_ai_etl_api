@@ -62,6 +62,7 @@ class SerpServiceManager(IWebServiceManager):
                 position_rank=Utility.clean_and_convert(item.get(nested_keys_to_use['position_rank'], 0)),
                 rating=Utility.clean_and_convert(item.get(nested_keys_to_use['rating'], 0)),
                 reviews=Utility.clean_and_convert(item.get(nested_keys_to_use['reviews'], 0)),
+                product_image=item.get(nested_keys_to_use['product_image'], None),
             )
 
             serp_response_items.append(serp_response)

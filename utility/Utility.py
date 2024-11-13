@@ -4,7 +4,7 @@ import os
 import io
 from dataclasses import is_dataclass, asdict
 from datetime import datetime
-from typing import Dict, Any, TypeVar, List
+from typing import Dict, Any, TypeVar, List, Type
 import re
 import pandas as pd
 
@@ -135,3 +135,35 @@ class Utility:
         # Create a DataFrame from the list of dictionaries
         df = pd.DataFrame(dict_list)
         return df
+
+    @staticmethod
+    def dataframe_to_dataclass(df: pd.DataFrame, dataclass_type: Type[T]) -> List[T]:
+        """
+        Converts a pandas DataFrame to a list of dataclass instances.
+
+        Args:
+            df (pd.DataFrame): The DataFrame to convert.
+            dataclass_type (Type[T]): The dataclass type to convert each row into.
+
+        Returns:
+            List[T]: A list of dataclass instances.
+        """
+        # Ensure the input type is a dataclass
+        if not is_dataclass(dataclass_type):
+            raise ValueError("The provided type must be a dataclass.")
+
+        dataclass_list = []
+
+        try:
+            for index, row in df.iterrows():
+                # Convert the row to a dictionary and unpack it into the dataclass
+                data = row.to_dict()
+                instance = dataclass_type(**data)
+                dataclass_list.append(instance)
+
+            Utility.debug_log(
+                f"Successfully converted DataFrame with {len(df)} rows to a list of {dataclass_type.__name__} instances.")
+            return dataclass_list
+        except Exception as e:
+            Utility.error_log(f"An error occurred while converting DataFrame to dataclass list: {e}")
+            raise

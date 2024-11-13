@@ -1,78 +1,116 @@
 from typing import List, Tuple, Union
-
 from models.request.RecRequestResourceModel import RecRequestResourceModel
 from models.response.SerpResponseModel import SerpResponseModel
 from utility.Utility import Utility
-import re
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
+from utility.MachineLearningToolkit import MachineLearningToolkit
+
+SIMILARITY_THRESHOLD = .85  # TODO MOVE TO ML_CONFIG
+DISSIMILARITY_THRESHOLD = .45  # TODO MOVE TO ML_CONFIG
 
 
 class RecommendationEngineManager:
-    def __init__(self):
-        pass
+    def __init__(self, ml_config):
+        self.__ml_tools = MachineLearningToolkit(ml_config)
 
-    def find_same_product(self, product_resource: RecRequestResourceModel,
-                          related_products: List[SerpResponseModel],
-                          related_product_name_field: str,
-                          price_difference_range: Tuple[float, float] = None) -> Union[SerpResponseModel | None]:
-        # TODO find same product at lower price
+    def find_same_product(
+            self,
+            product_resource: RecRequestResourceModel,
+            related_products: List[SerpResponseModel],
+            related_product_name_field: str,
+            price_difference_range: Tuple[float, float] = None
+    ) -> Union[SerpResponseModel, None]:
+        """
+        Finds the same product at a potentially lower price.
+
+        Arguments:
+            product_resource: RecRequestResourceModel - The original product data.
+            related_products: List[SerpResponseModel] - A list of related product data.
+            related_product_name_field: str - The field name to use for product titles.
+            price_difference_range: Tuple[float, float] - Optional range for price difference filtering.
+
+        Returns:
+            SerpResponseModel or None - The matching product at a lower price, if found.
+        """
         related_products_df = Utility.dataclass_to_dataframe(related_products)
 
-        # TODO fuzzy match to locate
+        found_related_products_df = self.__ml_tools.get_product_sbert_sim(product_resource=product_resource,
+                                                                          related_product_name_field=
+                                                                          related_product_name_field,
+                                                                          related_products_df=related_products_df)
 
-        def tokenize_title(title):
+        found_related_products_df = found_related_products_df[found_related_products_df["similarity"] >
+                                                              SIMILARITY_THRESHOLD]
+        found_related_products_df = found_related_products_df.sort_values(by=['similarity'], ascending=False)
 
-            title = re.sub(r'[^a-zA-Z0-9\s]+', '', title).lower().split()
-            return set(title)
+        if price_difference_range:
+            min_price_per, max_price_per = price_difference_range
+            min_price = product_resource.product_price * min_price_per
+            max_price = product_resource.product_price * max_price_per
 
+            mask = (found_related_products_df['price'] > min_price) & (found_related_products_df['price'] < max_price)
+            found_related_products_df = found_related_products_df[mask]
+        else:
+            found_related_products_df = found_related_products_df[found_related_products_df['price'] <
+                                                                  product_resource.product_price]
 
-        def jaccard_sim(og_product,product):
+        if found_related_products_df.empty:
+            return None
 
-            intersection = len(og_product.intersection(product))
-            union = len(og_product.union(product))
-            return intersection / union 
+        found_related_products_df = found_related_products_df.head(1)
 
-        def get_product_jaccard_sim(product_resource,related_products_df):
-            jaccard_sim_list=[]
-            for product in related_products_df:
+        found_related_products_df = found_related_products_df.drop(columns=['similarity'], axis=1)
 
-                title = tokenize_title(product['product_title'])
-                product_sim = jaccard_sim(title, tokenize_title(product_resource.product_title))
-                jaccard_sim_list.append(product_sim)
+        same_product_lower = Utility.dataframe_to_dataclass(found_related_products_df, SerpResponseModel)
 
-            related_products_df['jaccard_sim']=jaccard_sim_list
-            return related_products_df
-        
-        def get_product_cosine_sim(product_resource,related_products_df):
-            cosine_sim_list=[]
-            product_titles = [product_resource.product_title] 
+        return same_product_lower[0]
 
-            for product in related_products_df:
-                recommendation_name = product['product_title']
-                product_titles.append(recommendation_name)
+    def find_related_product(
+            self,
+            product_resource: RecRequestResourceModel,
+            related_products: List[SerpResponseModel],
+            related_product_name_field: str,
+            price_difference_range: Tuple[float, float]
+    ) -> Union[SerpResponseModel, None]:
+        """
+        Finds a related product with a similar name that falls within the specified price difference range.
 
-            vectorizer = TfidfVectorizer()
-            tfidf_matrix = vectorizer.fit_transform(product_titles)
-            cosine_similarities = cosine_similarity(tfidf_matrix[0:1], tfidf_matrix[1:]).flatten()
+        Arguments:
+            product_resource: RecRequestResourceModel - The original product data.
+            related_products: List[SerpResponseModel] - A list of related product data.
+            related_product_name_field: str - The field name to use for product titles.
+            price_difference_range: Tuple[float, float] - The range of acceptable price differences.
 
-            for i, product in enumerate(related_products_df):
-                cosine_sim_list.append(float(cosine_similarities[i]))
+        Returns:
+            SerpResponseModel or None - The related product, if found within the price range.
+        """
 
-            related_products_df['cosine_sim']=cosine_sim_list
-            return related_products_df
-
-        # price_difference_range -> .3 to .6 (30 - 60 % diff) -> not required here -> just find at lower price
-        return None
-
-    def find_related_product(self, product_resource: RecRequestResourceModel,
-                             related_products: List[SerpResponseModel],
-                             related_product_name_field: str,
-                             price_difference_range: Tuple[float, float]) -> Union[SerpResponseModel | None]:
-        # TODO find similar product at lower price
         related_products_df = Utility.dataclass_to_dataframe(related_products)
 
+        found_related_products_df = self.__ml_tools.get_product_sbert_sim(product_resource=product_resource,
+                                                                          related_product_name_field=
+                                                                          related_product_name_field,
+                                                                          related_products_df=related_products_df)
 
-        # price_difference_range -> .3 to .6 (30 - 60 % diff)
-        return None
+        found_related_products_df = found_related_products_df[found_related_products_df["similarity"] <=
+                                                              DISSIMILARITY_THRESHOLD]
+
+        found_related_products_df = found_related_products_df.sort_values(by=['similarity'], ascending=True)
+
+        min_price_per, max_price_per = price_difference_range
+        min_price = product_resource.product_price * min_price_per
+        max_price = product_resource.product_price * max_price_per
+
+        mask = (found_related_products_df['price'] > min_price) & (found_related_products_df['price'] < max_price)
+        found_related_products_df = found_related_products_df[mask]
+
+        if found_related_products_df.empty:
+            return None
+
+        found_related_products_df = found_related_products_df.head(1)
+
+        found_related_products_df = found_related_products_df.drop(columns=['similarity'], axis=1)
+
+        related_products = Utility.dataframe_to_dataclass(found_related_products_df, SerpResponseModel)
+
+        return related_products[0]
 

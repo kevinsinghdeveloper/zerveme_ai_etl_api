@@ -14,3 +14,4 @@ class SerpResponseModel(ResponseModel):
     position_rank: Optional[int]
     rating: Optional[float]
     reviews: Optional[int]
+    product_image: Optional[str]

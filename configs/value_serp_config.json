@@ -1,0 +1,24 @@
+{
+    "api_base_url": "https://api.valueserp.com/search",
+      "api_filters": {
+        "api_key": "524F47924BDA4FEBBBCCDA6EE2F869E4",
+        "search_type":"shopping",
+        "hl":"en",
+        "gl":"us"
+      },
+      "query_keyword": "q",
+      "result_config": {
+        "related_shopping_items": "shopping_results",
+        "nested_keys_to_use": {
+          "product_title": "title",
+          "product_id": "id",
+          "url": "link",
+          "merchant": "merchant",
+          "price": "price_raw",
+          "position_rank": "position",
+          "rating": "rating",
+          "reviews": "reviews"
+        }
+
+      }
+  }
