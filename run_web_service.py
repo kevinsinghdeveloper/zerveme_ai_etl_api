@@ -26,8 +26,8 @@ register_controller(app, AuthenticationController, auth_resource_manager)
 
 
 def run_web_service():
-    app.run(host='0.0.0.0', port=1234)
-
+    #app.run(host='0.0.0.0', port=5001)
+    app.run(debug=True, port=5001)
 
 if __name__ == '__main__':
     run_web_service()
