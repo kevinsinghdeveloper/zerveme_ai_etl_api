@@ -7,8 +7,10 @@ from managers.SerpServiceManager import SerpServiceManager
 from managers.auth.AuthenticationResourceManager import AuthenticationResourceManager
 from managers.rec.RecSysResourceManager import RecSysResourceManager
 from utility.Utility import Utility
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 api_config = Utility.read_in_json_file("configs/serp_config.json")
 ml_config = Utility.read_in_json_file("configs/ml_config.json")
