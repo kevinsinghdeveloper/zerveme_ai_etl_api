@@ -42,7 +42,7 @@ class RecSysResourceManager(IResourceManager):
             product_resource=request_resource_model,
             related_products=related_serp_data_items,
             related_product_name_field="product_title",
-            price_difference_range=(.35, .55)
+            price_difference_range=(.25, .55)
         )
         if related_product_tier_1:
             best_items['related_1'] = related_product_tier_1
@@ -51,7 +51,7 @@ class RecSysResourceManager(IResourceManager):
             product_resource=request_resource_model,
             related_products=related_serp_data_items,
             related_product_name_field="product_title",
-            price_difference_range=(.56, .75)  # default to just finding any at lower (use lowest)
+            price_difference_range=(.56, .85)  # default to just finding any at lower (use lowest)
         )
         if related_product_tier_2:
             best_items['related_2'] = related_product_tier_2

@@ -4,8 +4,8 @@ from models.response.SerpResponseModel import SerpResponseModel
 from utility.Utility import Utility
 from utility.MachineLearningToolkit import MachineLearningToolkit
 
-SIMILARITY_THRESHOLD = .85  # TODO MOVE TO ML_CONFIG
-DISSIMILARITY_THRESHOLD = .45  # TODO MOVE TO ML_CONFIG
+SIMILARITY_THRESHOLD = .75  # TODO MOVE TO ML_CONFIG
+DISSIMILARITY_THRESHOLD = .25  # TODO MOVE TO ML_CONFIG
 
 
 class RecommendationEngineManager:
@@ -38,7 +38,7 @@ class RecommendationEngineManager:
                                                                           related_product_name_field,
                                                                           related_products_df=related_products_df)
 
-        found_related_products_df = found_related_products_df[found_related_products_df["similarity"] >
+        found_related_products_df = found_related_products_df[found_related_products_df["similarity"] >=
                                                               SIMILARITY_THRESHOLD]
         found_related_products_df = found_related_products_df.sort_values(by=['similarity'], ascending=False)
 
@@ -91,7 +91,7 @@ class RecommendationEngineManager:
                                                                           related_product_name_field,
                                                                           related_products_df=related_products_df)
 
-        found_related_products_df = found_related_products_df[found_related_products_df["similarity"] <=
+        found_related_products_df = found_related_products_df[found_related_products_df["similarity"] >=
                                                               DISSIMILARITY_THRESHOLD]
 
         found_related_products_df = found_related_products_df.sort_values(by=['similarity'], ascending=True)
