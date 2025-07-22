@@ -14,3 +14,7 @@ class IResourceManager:
     @abstractmethod
     def get(self, request_resource_model: RequestResourceModel) -> ResponseModel:
         pass
+
+    @abstractmethod
+    def post(self, request_resource_model: RequestResourceModel) -> ResponseModel:
+        pass

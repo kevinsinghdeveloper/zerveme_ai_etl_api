@@ -13,5 +13,8 @@ class ReportProcessorResourceManager(IResourceManager):
         super().__init__(web_service_manager=web_service_managers)
 
     def get(self, request_resource_model: ReportProcessorRequestResourceModel):
-        pass
+        return jsonify({"message": "Getting status", "data": []})
+
+    def post(self, request_resource_model: ReportProcessorRequestResourceModel):
+        return jsonify({"message": "Post request on task", "data": []})
         # return jsonify({"message": "Recommendation generated", "data": [results]})
