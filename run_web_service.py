@@ -1,3 +1,5 @@
+import logging
+
 from flask import Flask, request, jsonify
 
 from controllers.auth.AuthenticationController import AuthenticationController
@@ -8,6 +10,15 @@ from managers.auth.AuthenticationResourceManager import AuthenticationResourceMa
 from managers.reports_processor.ReportProcessorResourceManager import ReportProcessorResourceManager
 from utility.Utility import Utility
 from flask_cors import CORS
+
+logging.basicConfig(
+    level=logging.INFO,  # Set the logging level
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.StreamHandler()  # This will print to console
+    ]
+)
+
 
 app = Flask(__name__)
 CORS(app)
