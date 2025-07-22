@@ -31,10 +31,10 @@ class ReportProcessorController(IController):
                             "start_job",
                             self.start_job,
                             "POST")
-        self.register_route("/report_processor/stop_job",
-                            "stop_job",
-                            self.stop_job,
-                            "POST")
+        # self.register_route("/report_processor/stop_job",
+        #                     "stop_job",
+        #                     self.stop_job,
+        #                     "POST")
     def get_job_status(self):
         request_model = ReportProcessorRequestResourceModel(
             task_type=request.json.get("task_type"),  # Changed from request.args to request.json
@@ -51,10 +51,10 @@ class ReportProcessorController(IController):
         data_response = self._resource_manager.post(request_model)
         return data_response
 
-    def stop_job(self):
-        request_model = ReportProcessorRequestResourceModel(
-            task_type=request.json.get("task_type"),
-            task_params=request.json.get("task_params")
-        )
-        data_response = self._resource_manager.post(request_model)
-        return data_response
+    # def stop_job(self):
+    #     request_model = ReportProcessorRequestResourceModel(
+    #         task_type=request.json.get("task_type"),
+    #         task_params=request.json.get("task_params")
+    #     )
+    #     data_response = self._resource_manager.post(request_model)
+    #     return data_response

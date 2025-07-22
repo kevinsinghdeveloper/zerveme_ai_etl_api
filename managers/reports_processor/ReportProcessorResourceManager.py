@@ -17,10 +17,11 @@ class ReportProcessorResourceManager(IResourceManager):
 
     def get(self, request_resource_model: ReportProcessorRequestResourceModel):
 
-        response = self.__etl_service_manager.run_task(request_resource_model)
+        # response = self.__etl_service_manager.run_task(request_resource_model)
 
         return jsonify({"message": "Getting status", "data": []})
 
     def post(self, request_resource_model: ReportProcessorRequestResourceModel):
+        response = self.__etl_service_manager.run_task(request_resource_model)
         return jsonify({"message": "Post request on task", "data": []})
         # return jsonify({"message": "Recommendation generated", "data": [results]})

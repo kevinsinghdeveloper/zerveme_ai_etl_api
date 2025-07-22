@@ -76,7 +76,8 @@ class ReportJobTaskManager(IETLServiceManager):
         return None
 
     def run_task(self, request: ReportProcessorRequestResourceModel):
-        etl_report = self.__get_report_instance("competitor_tracker", self._etl_config)
+        run_params = request.task_params
+        etl_report = self.__get_report_instance("competitor_tracker", run_params)
 
         if etl_report:
             etl_report.run_etl()
