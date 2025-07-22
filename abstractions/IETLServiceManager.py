@@ -9,6 +9,7 @@ class IETLServiceManager:
     def __init__(self, etl_config: dict):
         self._etl_config = etl_config
 
-
+    def run_task(self, request_resource_model: RequestResourceModel) -> ResponseModel:
+        pass
 
     # tokens etc?
