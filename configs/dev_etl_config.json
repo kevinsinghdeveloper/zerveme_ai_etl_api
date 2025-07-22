@@ -1,0 +1,9 @@
+{
+  "web_api_config": {
+    "base_url": "https://api.example.com",
+    "credentials": {
+      "username": "ksingh",
+      "password": "password123"
+    }
+  }
+}

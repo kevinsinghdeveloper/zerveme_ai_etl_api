@@ -3,12 +3,13 @@ from abc import abstractmethod
 from typing import List, Union, Dict, Optional
 
 from abstractions import IWebServiceManager
+from abstractions.IETLServiceManager import IETLServiceManager
 from abstractions.models.RequestResourceModel import RequestResourceModel
 from abstractions.models.ResponseModel import ResponseModel
 
 
 class IResourceManager:
-    def __init__(self, web_service_manager: Optional[Dict[str, IWebServiceManager]] = None):
+    def __init__(self, web_service_manager: Optional[Dict[str, Union[IWebServiceManager, IETLServiceManager]]] = None):
         self._web_service_managers = web_service_manager
 
     @abstractmethod

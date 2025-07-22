@@ -3,6 +3,7 @@ from flask import Flask, request, jsonify
 from controllers.auth.AuthenticationController import AuthenticationController
 from controllers.report_processor.ReportProcessorController import ReportProcessorController
 from handler.register_components import register_controller
+from managers.ReportJobsTaskManager import ReportJobTaskManager
 from managers.auth.AuthenticationResourceManager import AuthenticationResourceManager
 from managers.reports_processor.ReportProcessorResourceManager import ReportProcessorResourceManager
 from utility.Utility import Utility
@@ -11,11 +12,13 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
-api_config = Utility.read_in_json_file("configs/serp_config.json")
+etl_config = Utility.read_in_json_file("configs/dev_etl_config.json")
 # ml_config = Utility.read_in_json_file("configs/ml_config.json")
 
+etl_service_manager = ReportJobTaskManager(etl_config=etl_config)
+
 # setup managers
-report_processor_resource_manager = ReportProcessorResourceManager()
+report_processor_resource_manager = ReportProcessorResourceManager({"etl_service_manager": etl_service_manager})
 auth_resource_manager = AuthenticationResourceManager()
 
 # register controllers
