@@ -3,9 +3,9 @@ import logging
 from abstractions.EtlReportBase import EtlReportBase
 
 
-class CompetitorTracker(EtlReportBase):
+class BrandPower(EtlReportBase):
     def __init__(self, run_params: dict):
-        super().__init__(run_params, "competitor_tracker")
+        super().__init__(run_params, "brand_power")
         # run params should contain ai configuration
 
     def configure_init_tasks(self):
