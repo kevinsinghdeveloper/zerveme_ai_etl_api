@@ -5,7 +5,7 @@ from flask import Flask, request, jsonify
 
 from abstractions.IController import IController
 from managers.auth.AuthenticationResourceManager import AuthenticationResourceManager
-from managers.rec.RecSysResourceManager import RecSysResourceManager
+# from managers.rec.RecSysResourceManager import RecSysResourceManager
 
 
 class AuthenticationController(IController):

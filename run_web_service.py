@@ -1,11 +1,10 @@
 from flask import Flask, request, jsonify
 
 from controllers.auth.AuthenticationController import AuthenticationController
-from controllers.rec.RecSysController import RecSysController
+from controllers.report_processor.ReportProcessorController import ReportProcessorController
 from handler.register_components import register_controller
-from managers.SerpServiceManager import SerpServiceManager
 from managers.auth.AuthenticationResourceManager import AuthenticationResourceManager
-from managers.rec.RecSysResourceManager import RecSysResourceManager
+from managers.reports_processor.ReportProcessorResourceManager import ReportProcessorResourceManager
 from utility.Utility import Utility
 from flask_cors import CORS
 
@@ -13,17 +12,14 @@ app = Flask(__name__)
 CORS(app)
 
 api_config = Utility.read_in_json_file("configs/serp_config.json")
-ml_config = Utility.read_in_json_file("configs/ml_config.json")
-
-# setup services
-serp_api_manager = SerpServiceManager(api_config=api_config)
+# ml_config = Utility.read_in_json_file("configs/ml_config.json")
 
 # setup managers
-rec_sys_resource_manager = RecSysResourceManager(serp_service_manager=serp_api_manager, ml_config=ml_config)
+report_processor_resource_manager = ReportProcessorResourceManager()
 auth_resource_manager = AuthenticationResourceManager()
 
 # register controllers
-register_controller(app, RecSysController, rec_sys_resource_manager)
+register_controller(app, ReportProcessorController, report_processor_resource_manager)
 register_controller(app, AuthenticationController, auth_resource_manager)
 
 

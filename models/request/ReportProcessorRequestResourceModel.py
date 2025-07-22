@@ -5,7 +5,5 @@ from abstractions.models.RequestResourceModel import RequestResourceModel
 
 
 @dataclass
-class RecRequestResourceModel(RequestResourceModel):
-    product_title: Optional[str]
-    web_site: Optional[str]
-    product_price: Optional[float]
+class ReportProcessorRequestResourceModel(RequestResourceModel):
+    pass
