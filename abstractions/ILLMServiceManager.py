@@ -15,6 +15,10 @@ class ILLMServiceManager(IServiceManagerBase):
     def run_task(self, request_resource_model: RequestResourceModel):
         pass
 
+    @abstractmethod
+    def get_base_prompt(self, prompt, llm_instructions):
+        pass
+
 
     # def configure_llm(self):
     #     config = self.get_config()

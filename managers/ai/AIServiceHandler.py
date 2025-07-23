@@ -13,8 +13,13 @@ class AIServiceHandler:
 
         ai_type = ai_service_map[ai_type]
 
+        llm_manager = None
         if ai_type == AiTypeEnum.OpenAI:
             from managers.ai.OpenAIServiceManager import OpenAIServiceManager
-            return OpenAIServiceManager(llm_config)
+
+            llm_manager = OpenAIServiceManager(llm_config)
+            llm_manager.configure()
         else:
             raise NotImplementedError
+
+        return llm_manager

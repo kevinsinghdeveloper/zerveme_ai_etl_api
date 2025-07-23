@@ -5,25 +5,24 @@ from abstractions.IETLServiceManager import IETLServiceManager
 import os
 import importlib.util
 
+from abstractions.ILLMServiceManager import ILLMServiceManager
 from models.request.ReportProcessorRequestResourceModel import ReportProcessorRequestResourceModel
 
 
 class ReportJobTaskManager(IETLServiceManager):
-    def configure(self, **kwargs) -> None:
-        pass
-
     def __init__(self, etl_config: dict):
         super().__init__(etl_config)
         self.__llm_manager = None
 
-    def configure_llm(self, llm_manager: IETLServiceManager):
+    def configure(self, **kwargs) -> None:
         """
         Configures the LLM manager with the ETL configuration.
-        
+
         Args:
             llm_manager (IETLServiceManager): The LLM manager to configure.
         """
-        self.__llm_manager = llm_manager
+        self.__llm_manager = kwargs.get("llm_manager")
+
 
     def __get_all_report_jobs(self):
         """
@@ -62,7 +61,7 @@ class ReportJobTaskManager(IETLServiceManager):
         
         return reports
 
-    def __get_report_instance(self, report_name: str, etl_config: dict) -> EtlReportBase | None:
+    def __get_report_instance(self, report_name: str, etl_config: dict, llm_manager: ILLMServiceManager) -> EtlReportBase | None:
         """
         Given a report name and config, returns an instance of the ETL class that inherits from ETLBase.
 
@@ -83,14 +82,14 @@ class ReportJobTaskManager(IETLServiceManager):
         for attr_name in dir(module):
             attr = getattr(module, attr_name)
             if inspect.isclass(attr) and issubclass(attr, EtlReportBase) and attr is not EtlReportBase:
-                return attr(etl_config)
+                return attr(etl_config, llm_manager)
 
         print(f"No ETLBase subclass found in module '{report_name}'.")
         return None
 
     def run_task(self, request: ReportProcessorRequestResourceModel):
         run_params = request.task_params
-        etl_report = self.__get_report_instance("competitor_tracker", run_params)
+        etl_report = self.__get_report_instance("competitor_tracker", run_params, self.__llm_manager)
 
         if etl_report:
             etl_report.run_etl()

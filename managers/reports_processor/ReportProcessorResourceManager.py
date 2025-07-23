@@ -24,8 +24,8 @@ class ReportProcessorResourceManager(IResourceManager):
     def post(self, request_resource_model: ReportProcessorRequestResourceModel):
         # TODO based on the request get the corresponding AI service manager
 
-        ai_service_manager = AIServiceHandler.get_ai_service(request_resource_model.llm_config)
-        self.__etl_service_manager.configure(ai_service_manager=ai_service_manager)
+        llm_manager = AIServiceHandler.get_ai_service(request_resource_model.llm_config)
+        self.__etl_service_manager.configure(llm_manager=llm_manager)
 
         # TODO configure should be linking -- we need to pass some test LLM credentials and test
         # TODO what else do we need to do? LLM should keep history no? or we should be ok

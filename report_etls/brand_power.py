@@ -1,10 +1,11 @@
 import logging
 from abstractions.EtlReportBase import EtlReportBase
+from abstractions.ILLMServiceManager import ILLMServiceManager
 
 
 class BrandPower(EtlReportBase):
-    def __init__(self, run_params: dict):
-        super().__init__(run_params, "brand_power")
+    def __init__(self, run_params: dict, llm_service_manager: ILLMServiceManager):
+        super().__init__(run_params, "brand_power", llm_service_manager)
         # run params should contain ai configuration
 
     def configure_init_tasks(self):

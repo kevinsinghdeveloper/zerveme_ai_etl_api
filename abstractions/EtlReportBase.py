@@ -1,10 +1,13 @@
 import logging
 from abc import abstractmethod
 
+from abstractions.ILLMServiceManager import ILLMServiceManager
+
 
 class EtlReportBase:
-    def __init__(self, run_params: dict, etl_name: str):
+    def __init__(self, run_params: dict, etl_name: str, llm_service_manager: ILLMServiceManager):
         self._run_params = run_params
+        self._llm_service_manager = llm_service_manager
 
         self._etl_name = etl_name
         self._pre_validation_pipeline_tasks = {}
