@@ -1,10 +1,16 @@
 import logging
-from abc import abstractmethod
+from abc import abstractmethod, ABC
 
 from abstractions.ILLMServiceManager import ILLMServiceManager
 
 
-class EtlReportBase:
+def run_pipeline(pipeline_tasks: dict):
+    for name, task in pipeline_tasks.items():
+        logging.info(f"Running task {name}...")
+        task()
+        logging.info(f"Task {name} completed successfully.")
+
+class EtlReportBase(ABC):
     def __init__(self, run_params: dict, etl_name: str, llm_service_manager: ILLMServiceManager):
         self._run_params = run_params
         self._llm_service_manager = llm_service_manager
@@ -26,23 +32,17 @@ class EtlReportBase:
 
         return {"status": "success", "message": "Competitor tracking completed."}
 
-    def run_pipeline(self, pipeline_tasks: dict):
-        for name, task in pipeline_tasks.items():
-            logging.info(f"Running task {name}...")
-            task()
-            logging.info(f"Task {name} completed successfully.")
-
     def run_pre_validation(self):
-        self.run_pipeline(self._pre_validation_pipeline_tasks)
+        run_pipeline(self._pre_validation_pipeline_tasks)
 
     def run_post_validation(self):
-        self.run_pipeline(self._post_validation_pipeline_tasks)
+        run_pipeline(self._post_validation_pipeline_tasks)
 
     def run_extract_tasks(self):
-        self.run_pipeline(self._extract_pipeline_tasks)
+        run_pipeline(self._extract_pipeline_tasks)
 
     def run_transform_process_tasks(self):
-        self.run_pipeline(self._transform_process_pipeline_tasks)
+        run_pipeline(self._transform_process_pipeline_tasks)
 
     @abstractmethod
     def configure_init_tasks(self):

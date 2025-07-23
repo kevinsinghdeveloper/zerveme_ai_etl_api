@@ -1,94 +1,86 @@
 import unittest
 from unittest.mock import Mock, patch
-from report_etls.brand_power import BrandPower  # Adjust import path as needed
+from report_etls.brand_power import BrandPower
 
 
 class TestBrandPower(unittest.TestCase):
     def setUp(self):
         """Set up test fixtures before each test method."""
         self.base_config = {
-            "start_date": "2024-01-01",
-            "end_date": "2024-01-31",
-            "brand_name": "test_brand",
-            "market": "US"
+            "target_industries": ["Technology"],
+            "company_name": "test_company",
+            "description_of_company": "Test company description",
+            "company_website": "www.testcompany.com",
+            "location": "Test Location",
+            "known_competitors": ["competitor1", "competitor2"]
         }
-        self.brand_power = BrandPower(self.base_config)
+        self.llm_service_manager = Mock()
+        self.brand_power = BrandPower(self.base_config, self.llm_service_manager)
 
-    def test_run_etl_with_basic_config(self):
-        """Test run_etl with basic configuration"""
-        result = self.brand_power.run_etl()
-        self.assertEqual(result["status"], "success")
-        self.assertEqual(result["message"], "Competitor tracking completed.")
+    def test_init_with_valid_config(self):
+        """Test initialization with valid configuration"""
+        brand_power = BrandPower(self.base_config, self.llm_service_manager)
+        self.assertIsNotNone(brand_power)
 
-    def test_run_etl_with_different_date_ranges(self):
-        """Test run_etl with various date ranges"""
-        test_configs = [
-            {"start_date": "2024-01-01", "end_date": "2024-01-31"},
-            {"start_date": "2024-01-01", "end_date": "2024-02-29"},
-            {"start_date": "2023-12-01", "end_date": "2024-01-31"}
-        ]
+    def test_check_run_params_with_valid_config(self):
+        """Test run parameter validation with valid configuration"""
+        result = self.brand_power._BrandPower__check_run_params()
+        self.assertIsNone(result)  # Should pass without raising exceptions
 
-        for config in test_configs:
-            with self.subTest(config=config):
-                self.brand_power._run_params.update(config)
-                result = self.brand_power.run_etl()
-                self.assertEqual(result["status"], "success")
+    def test_check_run_params_with_missing_fields(self):
+        """Test run parameter validation with missing fields"""
+        invalid_config = {
+            "target_industries": ["Technology"]  # Missing other required fields
+        }
+        brand_power = BrandPower(invalid_config, self.llm_service_manager)
+        with self.assertRaises(ValueError) as context:
+            brand_power._BrandPower__check_run_params()
+        self.assertTrue("Missing required run parameters" in str(context.exception))
 
-    def test_run_etl_with_different_markets(self):
-        """Test run_etl with different market parameters"""
-        test_markets = ["US", "UK", "EU", "APAC"]
+    def test_check_run_params_with_empty_fields(self):
+        """Test run parameter validation with empty fields"""
+        invalid_config = self.base_config.copy()
+        invalid_config["company_name"] = ""  # Empty field
+        brand_power = BrandPower(invalid_config, self.llm_service_manager)
+        with self.assertRaises(ValueError) as context:
+            brand_power._BrandPower__check_run_params()
+        self.assertTrue("cannot be empty" in str(context.exception))
 
-        for market in test_markets:
-            with self.subTest(market=market):
-                self.brand_power._run_params["market"] = market
-                result = self.brand_power.run_etl()
-                self.assertEqual(result["status"], "success")
+    def test_check_run_params_with_invalid_industry(self):
+        """Test run parameter validation with invalid industry"""
+        invalid_config = self.base_config.copy()
+        invalid_config["target_industries"] = ["InvalidIndustry"]
+        brand_power = BrandPower(invalid_config, self.llm_service_manager)
+        with self.assertRaises(ValueError) as context:
+            brand_power._BrandPower__check_run_params()
+        self.assertTrue("Invalid target industries specified" in str(context.exception))
 
-    @patch('report_etls.brand_power.BrandPower.configure_init_tasks')
-    @patch('report_etls.brand_power.BrandPower.run_pre_validation')
-    @patch('report_etls.brand_power.BrandPower.run_extract_tasks')
-    @patch('report_etls.brand_power.BrandPower.run_transform_process_tasks')
-    @patch('report_etls.brand_power.BrandPower.run_post_validation')
-    def test_run_etl_steps_execution(self, mock_post_val, mock_transform,
-                                     mock_extract, mock_pre_val, mock_init):
-        """Test that all ETL steps are called in correct order"""
-        result = self.brand_power.run_etl()
+    def test_get_list_competitors_prompt(self):
+        """Test competitor list prompt generation"""
+        prompt = self.brand_power._BrandPower__get_list_competitors_prompt()
+        self.assertIsInstance(prompt, str)
+        self.assertIn(self.base_config["company_name"], prompt)
+        self.assertIn(self.base_config["company_website"], prompt)
+        self.assertIn("Technology", prompt)  # Should contain the industry
+        self.assertIn(self.base_config["location"], prompt)
+        self.assertIn("competitor1", prompt)
+        self.assertIn("competitor2", prompt)
 
-        # Verify all steps were called exactly once
-        mock_init.assert_called_once()
-        mock_pre_val.assert_called_once()
-        mock_extract.assert_called_once()
-        mock_transform.assert_called_once()
-        mock_post_val.assert_called_once()
+    @patch('logging.info')
+    def test_craft_prompts(self, mock_logging):
+        """Test prompt crafting process"""
+        self.brand_power._BrandPower__craft_prompts()
+        mock_logging.assert_called_with("Crafting prompts.")
 
-        # Verify the order of calls
-        expected_order = [
-            mock_init,
-            mock_pre_val,
-            mock_extract,
-            mock_transform,
-            mock_post_val
-        ]
-
-        for i in range(len(expected_order) - 1):
-            self.assertTrue(
-                expected_order[i].call_count == 1 and
-                expected_order[i + 1].call_count == 1
-            )
-
-    def test_run_etl_with_invalid_config(self):
-        """Test run_etl with invalid configuration"""
-        invalid_configs = [
-            {"start_date": "invalid_date", "end_date": "2024-01-31"},
-            {"start_date": "2024-01-01", "end_date": "2023-12-31"},  # end before start
-            {"market": "INVALID_MARKET"}
-        ]
-
-        for config in invalid_configs:
-            with self.subTest(config=config):
-                self.brand_power._run_params.update(config)
-                with self.assertRaises(Exception):  # Adjust exception type as needed
-                    self.brand_power.run_etl()
+    def test_configure_init_tasks(self):
+        """Test initialization of pipeline tasks"""
+        self.brand_power.configure_init_tasks()
+        
+        # Verify pre-validation tasks
+        self.assertIn("Check run params", self.brand_power._pre_validation_pipeline_tasks)
+        
+        # Verify extract tasks
+        self.assertIn("Generate prompts", self.brand_power._extract_pipeline_tasks)
 
 
 if __name__ == '__main__':

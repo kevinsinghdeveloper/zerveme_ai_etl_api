@@ -1,0 +1,153 @@
+{
+  "Technology": [
+    {
+      "name": "TechCrunch",
+      "url": "https://techcrunch.com",
+      "description": "Covers startup and tech company news, product launches, and venture capital trends."
+    },
+    {
+      "name": "The Verge",
+      "url": "https://www.theverge.com",
+      "description": "Explores the intersection of technology, science, art, and culture with in-depth reporting."
+    },
+    {
+      "name": "Wired",
+      "url": "https://www.wired.com",
+      "description": "Features stories on emerging technologies, digital culture, and the impact of tech on society."
+    },
+    {
+      "name": "Ars Technica",
+      "url": "https://arstechnica.com",
+      "description": "Provides deep technical news and analysis for IT professionals and tech enthusiasts."
+    },
+    {
+      "name": "Hacker News",
+      "url": "https://news.ycombinator.com",
+      "description": "A social news site run by Y Combinator, popular among developers and tech entrepreneurs."
+    },
+    {
+      "name": "a16z Podcast",
+      "url": "https://a16z.com/podcasts/",
+      "description": "Andreesen Horowitz's podcast on startups, tech, and the future of innovation."
+    },
+    {
+      "name": "Stratechery",
+      "url": "https://stratechery.com",
+      "description": "A subscription-based blog by Ben Thompson offering strategic analysis of the tech industry."
+    },
+    {
+      "name": "Benedict Evans",
+      "url": "https://www.ben-evans.com/newsletter",
+      "description": "Tech analyst Benedict Evans shares weekly commentary and insights on tech trends."
+    },
+    {
+      "name": "Waveform by MKBHD",
+      "url": "https://www.youtube.com/c/MKBHD",
+      "description": "Podcast and YouTube channel hosted by Marques Brownlee focusing on consumer tech."
+    },
+    {
+      "name": "The Vergecast",
+      "url": "https://www.theverge.com/the-vergecast",
+      "description": "Weekly tech news podcast by The Verge covering gadgets, AI, and the tech industry."
+    }
+  ],
+  "Fashion": [
+    {
+      "name": "Business of Fashion",
+      "url": "https://www.businessoffashion.com",
+      "description": "Authoritative source of business intelligence on the global fashion industry."
+    },
+    {
+      "name": "Vogue",
+      "url": "https://www.vogue.com",
+      "description": "Leading fashion magazine covering style, beauty, culture, and runway trends."
+    },
+    {
+      "name": "Highsnobiety",
+      "url": "https://www.highsnobiety.com",
+      "description": "Trendy fashion and lifestyle site focusing on streetwear, culture, and emerging designers."
+    },
+    {
+      "name": "Fashionista",
+      "url": "https://fashionista.com",
+      "description": "Covers fashion industry news, trends, career advice, and fashion business updates."
+    },
+    {
+      "name": "WWD (Women's Wear Daily)",
+      "url": "https://wwd.com",
+      "description": "Known as the fashion industry bible, offering insider news on brands and fashion events."
+    },
+    {
+      "name": "Glossy",
+      "url": "https://www.glossy.co/newsletter/",
+      "description": "Digital media outlet covering the transformation of the fashion, beauty, and wellness industries."
+    },
+    {
+      "name": "The Impression",
+      "url": "https://www.theimpression.com",
+      "description": "Premium content platform focused on high fashion advertising, campaigns, and runway analysis."
+    },
+    {
+      "name": "Dressed: The History of Fashion",
+      "url": "https://www.iheart.com/podcast/105-dressed-the-history-of-fas-29246699/",
+      "description": "Podcast exploring the social and historical context of fashion across cultures and eras."
+    },
+    {
+      "name": "The Business of Fashion Podcast",
+      "url": "https://www.businessoffashion.com/podcasts",
+      "description": "Weekly podcast featuring interviews with leaders in the fashion and luxury industries."
+    }
+  ],
+  "Health": [
+    {
+      "name": "Healthline",
+      "url": "https://www.healthline.com",
+      "description": "Trusted health and wellness site providing medically-reviewed information and tips."
+    },
+    {
+      "name": "WebMD",
+      "url": "https://www.webmd.com",
+      "description": "Comprehensive resource for health news, conditions, medications, and expert advice."
+    },
+    {
+      "name": "Medical News Today",
+      "url": "https://www.medicalnewstoday.com",
+      "description": "Up-to-date health news and medical research across a wide range of conditions."
+    },
+    {
+      "name": "Mayo Clinic",
+      "url": "https://www.mayoclinic.org",
+      "description": "Leading nonprofit medical center offering health information, research, and treatment guides."
+    },
+    {
+      "name": "Harvard Health Blog",
+      "url": "https://www.health.harvard.edu/blog",
+      "description": "Harvard Medical School's blog featuring expert health commentary and wellness tips."
+    },
+    {
+      "name": "The Drive with Peter Attia",
+      "url": "https://peterattiamd.com/podcast/",
+      "description": "In-depth podcast on health, longevity, and performance with renowned experts."
+    },
+    {
+      "name": "Huberman Lab",
+      "url": "https://hubermanlab.com",
+      "description": "Science-based podcast by Dr. Andrew Huberman covering neuroscience, sleep, and wellness."
+    },
+    {
+      "name": "FoundMyFitness",
+      "url": "https://www.foundmyfitness.com",
+      "description": "Dr. Rhonda Patrick shares research-backed content on nutrition, aging, and exercise."
+    },
+    {
+      "name": "NIH Research Matters",
+      "url": "https://www.nih.gov/news-events/nih-research-matters",
+      "description": "Weekly update from the National Institutes of Health on new biomedical research findings."
+    },
+    {
+      "name": "Healthline Newsletters",
+      "url": "https://www.healthline.com/newsletter-signup",
+      "description": "Curated health and wellness content delivered by Healthline editors via email."
+    }
+  ]
+}
