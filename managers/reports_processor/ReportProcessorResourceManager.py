@@ -23,7 +23,9 @@ class ReportProcessorResourceManager(IResourceManager):
 
     def post(self, request_resource_model: ReportProcessorRequestResourceModel):
         # TODO based on the request get the corresponding AI service manager
-        # ai_service_manager = AIServiceHandler.get_ai_service(request_resource_model.ai_type)
+
+        ai_service_manager = AIServiceHandler.get_ai_service(request_resource_model.llm_config)
+        self.__etl_service_manager.configure(ai_service_manager=ai_service_manager)
 
         response = self.__etl_service_manager.run_task(request_resource_model)
         return jsonify({"message": "Post request on task", "data": []})

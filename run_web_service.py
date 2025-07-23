@@ -25,7 +25,6 @@ CORS(app)
 
 etl_config = Utility.read_in_json_file("configs/dev_etl_config.json")
 # ml_config = Utility.read_in_json_file("configs/ml_config.json")
-
 etl_service_manager = ReportJobTaskManager(etl_config=etl_config)
 
 # setup managers

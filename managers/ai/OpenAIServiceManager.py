@@ -18,5 +18,8 @@ class OpenAIServiceManager(ILLMServiceManager):
     def __init__(self, config: dict):
         super().__init__(config)
 
-    def submit_prompt(self, request_resource_model: LLMRequestResourceModel) -> Union[List[LLMResponseModel] | None]:
+    def configure(self, **kwargs) -> None:
+        pass
+
+    def run_task(self, request_resource_model: RequestResourceModel):
         pass

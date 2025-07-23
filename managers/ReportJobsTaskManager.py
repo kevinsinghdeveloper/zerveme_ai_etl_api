@@ -9,8 +9,21 @@ from models.request.ReportProcessorRequestResourceModel import ReportProcessorRe
 
 
 class ReportJobTaskManager(IETLServiceManager):
+    def configure(self, **kwargs) -> None:
+        pass
+
     def __init__(self, etl_config: dict):
         super().__init__(etl_config)
+        self.__llm_manager = None
+
+    def configure_llm(self, llm_manager: IETLServiceManager):
+        """
+        Configures the LLM manager with the ETL configuration.
+        
+        Args:
+            llm_manager (IETLServiceManager): The LLM manager to configure.
+        """
+        self.__llm_manager = llm_manager
 
     def __get_all_report_jobs(self):
         """

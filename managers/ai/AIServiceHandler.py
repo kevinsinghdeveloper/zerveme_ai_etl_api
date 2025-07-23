@@ -6,14 +6,15 @@ ai_service_map = {
 
 class AIServiceHandler:
     @staticmethod
-    def get_ai_service(ai_type: str):
+    def get_ai_service(llm_config: dict):
+        ai_type = llm_config.get("ai_type")
         if ai_type not in ai_service_map:
             raise ValueError(f"Unsupported AI type: {ai_type}. Supported types are: {list(ai_service_map.keys())}")
 
         ai_type = ai_service_map[ai_type]
 
-        if ai_type == AiTypeEnum.OpenAI.value:
+        if ai_type == AiTypeEnum.OpenAI:
             from managers.ai.OpenAIServiceManager import OpenAIServiceManager
-            return OpenAIServiceManager
+            return OpenAIServiceManager(llm_config)
         else:
             raise NotImplementedError

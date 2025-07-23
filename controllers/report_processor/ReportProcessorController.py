@@ -46,7 +46,8 @@ class ReportProcessorController(IController):
     def start_job(self):
         request_model = ReportProcessorRequestResourceModel(
             task_type=request.json.get("task_type"),
-            task_params=request.json.get("task_params")
+            task_params=request.json.get("task_params"),
+            llm_config = request.json.get("llm_config")
         )
         data_response = self._resource_manager.post(request_model)
         return data_response
