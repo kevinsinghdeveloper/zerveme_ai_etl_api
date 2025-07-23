@@ -6,6 +6,7 @@ import os
 import importlib.util
 
 from abstractions.ILLMServiceManager import ILLMServiceManager
+from abstractions.enumerations.JobStatusEnum import JobStatusEnum
 from models.request.ReportProcessorRequestResourceModel import ReportProcessorRequestResourceModel
 
 
@@ -88,12 +89,17 @@ class ReportJobTaskManager(IETLServiceManager):
         return None
 
     def run_task(self, request: ReportProcessorRequestResourceModel):
+        task_type = request.task_type
         run_params = request.task_params
-        report_name = run_params.get("report_name")
+        report_name = request.report_name
+
         etl_report = self.__get_report_instance(report_name, run_params, self.__llm_manager)
 
         if etl_report:
-            etl_report.run_etl()
+            if task_type == JobStatusEnum.START:
+                etl_report.run_etl()
+            else:
+                raise ValueError(f"Unsupported task type: {task_type}")
         else:
             raise Exception("Failed to create ETL report instance.")
 

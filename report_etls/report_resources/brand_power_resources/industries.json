@@ -1,0 +1,290 @@
+{
+  "Technology": [
+    {
+      "label": "Innovative",
+      "description": "Introducing new or transformative solutions."
+    },
+    {
+      "label": "Scalable",
+      "description": "Growing seamlessly with demand."
+    },
+    {
+      "label": "Reliable",
+      "description": "Offering consistent and dependable performance."
+    },
+    {
+      "label": "Cost-effective",
+      "description": "Delivering value at a reasonable cost."
+    },
+    {
+      "label": "Secure",
+      "description": "Ensuring data privacy and robust protection against threats."
+    },
+    {
+      "label": "Versatile",
+      "description": "Adaptable to multiple use cases and industries."
+    },
+    {
+      "label": "High-performance",
+      "description": "Delivering exceptional speed and processing power."
+    },
+    {
+      "label": "User-friendly",
+      "description": "Simplifying adoption through intuitive design."
+    },
+    {
+      "label": "Interoperable",
+      "description": "Seamlessly integrating with other technologies."
+    },
+    {
+      "label": "Sustainable",
+      "description": "Environmentally conscious and energy-efficient."
+    },
+    {
+      "label": "AI-powered",
+      "description": "Utilizing artificial intelligence for advanced capabilities."
+    },
+    {
+      "label": "Modular",
+      "description": "Easily reconfigurable or upgradeable components."
+    },
+    {
+      "label": "Cloud-based",
+      "description": "Hosted on the cloud for easy access and scalability."
+    },
+    {
+      "label": "Low-latency",
+      "description": "Providing rapid response times with minimal delay."
+    },
+    {
+      "label": "Open-source",
+      "description": "Developed collaboratively and freely accessible."
+    },
+    {
+      "label": "Automated",
+      "description": "Reducing manual intervention through smart automation."
+    },
+    {
+      "label": "Edge-computing",
+      "description": "Processing data near the source to reduce latency."
+    },
+    {
+      "label": "Decentralized",
+      "description": "Distributed systems without a single point of control."
+    },
+    {
+      "label": "Quantum-enabled",
+      "description": "Leveraging quantum computing for complex problem-solving."
+    },
+    {
+      "label": "Responsive",
+      "description": "Adapting to user inputs or conditions in real-time."
+    }
+  ],
+  "Fashion": [
+    {
+      "label": "Trendy",
+      "description": "Reflecting the latest styles and current market preferences."
+    },
+    {
+      "label": "Timeless",
+      "description": "Featuring classic designs that endure beyond trends."
+    },
+    {
+      "label": "Sustainable",
+      "description": "Utilizing eco-friendly materials and ethical production."
+    },
+    {
+      "label": "Innovative",
+      "description": "Pioneering new fabrics, designs, or production methods."
+    },
+    {
+      "label": "Luxurious",
+      "description": "Offering high-quality craftsmanship and premium materials."
+    },
+    {
+      "label": "Affordable",
+      "description": "Accessible price points without sacrificing style."
+    },
+    {
+      "label": "Comfortable",
+      "description": "Prioritizing wearability and ergonomic design."
+    },
+    {
+      "label": "Customizable",
+      "description": "Allowing personalized designs or tailored fits."
+    },
+    {
+      "label": "Functional",
+      "description": "Combining practicality with aesthetic appeal."
+    },
+    {
+      "label": "Bold",
+      "description": "Standing out with vibrant or daring designs."
+    },
+    {
+      "label": "Minimalist",
+      "description": "Clean, simple designs with subtle elegance."
+    },
+    {
+      "label": "Edgy",
+      "description": "Pushing boundaries with unconventional styles."
+    },
+    {
+      "label": "Athleisure",
+      "description": "Blending athletic wear with casual fashion."
+    },
+    {
+      "label": "Artisanal",
+      "description": "Handcrafted pieces emphasizing craftsmanship."
+    },
+    {
+      "label": "Inclusive",
+      "description": "Designed for diverse body types and identities."
+    },
+    {
+      "label": "Eco-conscious",
+      "description": "Focused on minimizing environmental impact."
+    },
+    {
+      "label": "Gender-neutral",
+      "description": "Designed without gender-specific constraints."
+    },
+    {
+      "label": "Layerable",
+      "description": "Designed for wearing in versatile combinations."
+    },
+    {
+      "label": "Statement",
+      "description": "Bold pieces intended to make a visual impact."
+    },
+    {
+      "label": "Seasonal",
+      "description": "Created specifically for current or upcoming seasons."
+    }
+  ],
+  "Health": [
+    {
+      "label": "Innovative",
+      "description": "Leveraging advanced science and technology."
+    },
+    {
+      "label": "Preventive",
+      "description": "Focusing on measures to avoid illness."
+    },
+    {
+      "label": "Holistic",
+      "description": "Addressing physical, mental, and emotional well-being."
+    },
+    {
+      "label": "Evidence-based",
+      "description": "Grounded in scientific research and clinical trials."
+    },
+    {
+      "label": "Sustainable",
+      "description": "Supporting long-term health and ecological practices."
+    },
+    {
+      "label": "Affordable",
+      "description": "Accessible to individuals across income levels."
+    },
+    {
+      "label": "Patient-centered",
+      "description": "Tailored to individual needs and preferences."
+    },
+    {
+      "label": "Accessible",
+      "description": "Ensuring availability across diverse populations."
+    },
+    {
+      "label": "Effective",
+      "description": "Demonstrating proven results in improving health."
+    },
+    {
+      "label": "Safe",
+      "description": "Minimizing risks and side effects in treatments or practices."
+    },
+    {
+      "label": "Tech-enabled",
+      "description": "Incorporating digital tools and devices in healthcare."
+    },
+    {
+      "label": "Therapeutic",
+      "description": "Promoting healing and wellness."
+    },
+    {
+      "label": "Nutrition-focused",
+      "description": "Emphasizing dietary and nutritional support."
+    },
+    {
+      "label": "Mental wellness",
+      "description": "Targeting psychological and emotional health."
+    },
+    {
+      "label": "Personalized",
+      "description": "Customized to individual health needs and goals."
+    },
+    {
+      "label": "Telehealth-ready",
+      "description": "Compatible with remote medical consultations."
+    },
+    {
+      "label": "Fitness-oriented",
+      "description": "Promoting physical activity and strength."
+    },
+    {
+      "label": "Rehabilitative",
+      "description": "Aiding recovery from injuries or illnesses."
+    },
+    {
+      "label": "Diagnostics-focused",
+      "description": "Aimed at identifying and understanding medical conditions."
+    },
+    {
+      "label": "Regenerative",
+      "description": "Stimulating tissue or organ regeneration."
+    }
+  ],
+  "Cross-Industry": [
+    {
+      "label": "Data-driven",
+      "description": "Guided by analytics and empirical data."
+    },
+    {
+      "label": "Collaborative",
+      "description": "Encouraging teamwork and co-creation."
+    },
+    {
+      "label": "Human-centered",
+      "description": "Prioritizing user needs and experience."
+    },
+    {
+      "label": "Resilient",
+      "description": "Capable of withstanding challenges and adapting."
+    },
+    {
+      "label": "Ethical",
+      "description": "Upholding principles of fairness, transparency, and integrity."
+    },
+    {
+      "label": "Scalable",
+      "description": "Capable of expanding efficiently as demand increases."
+    },
+    {
+      "label": "Mobile-friendly",
+      "description": "Optimized for mobile device use."
+    },
+    {
+      "label": "Real-time",
+      "description": "Providing instant updates or feedback."
+    },
+    {
+      "label": "Low-carbon",
+      "description": "Reducing emissions for a smaller carbon footprint."
+    },
+    {
+      "label": "Culturally aware",
+      "description": "Respectful and inclusive of diverse cultural contexts."
+    }
+  ]
+}

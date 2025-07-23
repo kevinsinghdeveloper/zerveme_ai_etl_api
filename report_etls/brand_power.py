@@ -1,8 +1,9 @@
+import json
 import logging
 from abstractions.EtlReportBase import EtlReportBase
 from abstractions.ILLMServiceManager import ILLMServiceManager
+from utility.Utility import Utility
 
-INDUSTRIES = {}
 
 class BrandPower(EtlReportBase):
     def __init__(self, run_params: dict, llm_service_manager: ILLMServiceManager):
@@ -10,6 +11,9 @@ class BrandPower(EtlReportBase):
         # run params should contain ai configuration
         self.__report_name = None
         self.__report_id = None
+
+        self.__industries = (Utility
+                             .read_in_json_file("report_etls/report_resources/brand_power_resources/industries.json"))
 
     def configure_init_tasks(self):
         self._pre_validation_pipeline_tasks  = {
