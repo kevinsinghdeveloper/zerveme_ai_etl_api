@@ -1,16 +1,18 @@
 # TODO -> read config for serp api
 from abc import abstractmethod
 from typing import List, Union
+
+from abstractions.IServiceManagerBase import IServiceManagerBase
 from abstractions.models import ResponseModel, ParameterModel
 from abstractions.models.RequestResourceModel import RequestResourceModel
 
 
-class ILLMServiceManager:
+class ILLMServiceManager(IServiceManagerBase):
     def __init__(self, config: dict):
-        self._config = config
+        super().__init__(config)
 
     @abstractmethod
-    def submit_prompt(self, request_resource_model: RequestResourceModel) -> Union[List[ResponseModel] | None]:
+    def run_task(self, request_resource_model: RequestResourceModel):
         pass
 
 

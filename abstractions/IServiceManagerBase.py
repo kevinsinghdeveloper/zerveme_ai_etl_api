@@ -1,17 +1,16 @@
 # TODO -> read config for serp api
 from abc import abstractmethod
 from typing import List, Union
-
-from abstractions.IServiceManagerBase import IServiceManagerBase
 from abstractions.models import ResponseModel, ParameterModel
 from abstractions.models.RequestResourceModel import RequestResourceModel
 
 
-class IETLServiceManager(IServiceManagerBase):
+class IServiceManagerBase:
     def __init__(self, config: dict):
-        super().__init__(config)
+        self._config = config
 
-    def run_task(self, request_resource_model: RequestResourceModel) -> ResponseModel:
+    @abstractmethod
+    def run_task(self, request: RequestResourceModel):
         pass
 
     # tokens etc?
