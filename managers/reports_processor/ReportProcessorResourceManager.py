@@ -27,6 +27,9 @@ class ReportProcessorResourceManager(IResourceManager):
         ai_service_manager = AIServiceHandler.get_ai_service(request_resource_model.llm_config)
         self.__etl_service_manager.configure(ai_service_manager=ai_service_manager)
 
+        # TODO configure should be linking -- we need to pass some test LLM credentials and test
+        # TODO what else do we need to do? LLM should keep history no? or we should be ok
+
         response = self.__etl_service_manager.run_task(request_resource_model)
         return jsonify({"message": "Post request on task", "data": []})
         # return jsonify({"message": "Recommendation generated", "data": [results]})
