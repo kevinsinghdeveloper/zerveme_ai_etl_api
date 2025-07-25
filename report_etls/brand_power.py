@@ -4,6 +4,12 @@ from abstractions.EtlReportBase import EtlReportBase
 from abstractions.ILLMServiceManager import ILLMServiceManager
 from utility.Utility import Utility
 
+'''
+TODO !
+List competitors -> get source scores -> generate zerveme scores for each company -> generate report
+'''
+
+
 EXAMPLE_STRUCTURE_FOR_COMPETITOR_LIST = """
 [
   {
@@ -186,7 +192,6 @@ Format the output as a JSON array of objects, for example:
 ]
 
 """
-
 
 class BrandPower(EtlReportBase):
     EXPECTED_RUN_PARAMS_FIELDS = [
