@@ -148,15 +148,44 @@ FORMAT_INSTRUCTIONS = (
     "- `name`: Name of the company\n"
     "- `traits`: List of the top 2 traits, chosen from this mapping: {industry_traits_mapping}\n"
     "- `description`: A short 1-2 sentence description explaining why they are a competitor\n"
+    "- `discoverability`: Integer from 1 to 10 indicating how easy it is to discover this competitor\n"
     "- `sources`: A list of at least 5 distinct links to blogs, news, or other credible sources that justify the traits or relevance of the competitor\n\n"
     "Use real, specific links wherever possible (not generic homepages)."
 )
+
 
 LIST_COMPETITORS_BASE_PROMPT = ("Please list top 10 competitors for the company` `{company_name}` and website `{company_website}` "
                                 "in the `{industries}` industries, in location `{location}`. "
                                 "Short description of this company is `{description}`."
                                 "Known competitors are `{competitors}`.")
-LIST_COMPETITORS_SYS_PROMPT = "You are an expert in market analysis and competitor identification." \
+LIST_COMPETITORS_SYS_PROMPT = "You are an expert in market analysis and competitor identification."
+
+
+# TODO modify to a can pass the sources in as a parameter and industry
+SOURCE_RANKING_PROMPT = """
+Please provide a detailed list of technology news websites and blogs that are top sources for tech industry information. For each source, include:
+
+- `name`: The name of the website or blog
+- `score`: A popularity rating from 1 to 10, where 10 means highest popularity/user count and 1 means low popularity
+- `focus`: A brief description of the primary focus or specialty of the source (e.g., AI news, consumer tech, marketing tech)
+- `url`: The direct URL to the source's homepage or main technology section
+
+Please rank the list roughly by popularity and influence in the technology space, covering a mix of general tech, AI, marketing tech, and niche sites. Include at least 15 entries.
+
+Format the output as a JSON array of objects, for example:
+
+[
+  {
+    "name": "TechCrunch",
+    "score": 10,
+    "focus": "Startup and tech news",
+    "url": "https://techcrunch.com"
+  },
+  ...
+]
+
+"""
+
 
 class BrandPower(EtlReportBase):
     EXPECTED_RUN_PARAMS_FIELDS = [
