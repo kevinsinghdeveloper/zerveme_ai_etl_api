@@ -142,7 +142,8 @@ EXAMPLE_STRUCTURE_FOR_COMPETITOR_LIST = """
 """
 
 FORMAT_INSTRUCTIONS = (
-    "Please output a JSON list of the top 10 competitors for the company, ranked from 1 to 10. "
+    "Please output a JSON list of the top 10 competitors for the company, ranked from 1 to 10. \n\n"
+    "Please include our target company \n\n"
     "Each competitor must have the following fields:\n\n"
     "- `rank`: Integer from 1 to 10\n"
     "- `name`: Name of the company\n"
