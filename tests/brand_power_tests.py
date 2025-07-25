@@ -70,7 +70,7 @@ class TestBrandPower(unittest.TestCase):
     def test_craft_prompts(self, mock_logging):
         """Test prompt crafting process"""
         self.brand_power._BrandPower__craft_prompts()
-        mock_logging.assert_called_with("Crafting prompts.")
+        mock_logging.assert_called_with("Prompts crafted successfully.")
 
     def test_configure_init_tasks(self):
         """Test initialization of pipeline tasks"""
