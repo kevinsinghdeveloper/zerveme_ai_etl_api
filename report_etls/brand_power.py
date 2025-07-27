@@ -166,6 +166,7 @@ FORMAT_INSTRUCTIONS = Template(
     "- `discoverability`: Integer from 1 to 10 indicating how easy it is to discover this competitor\n"
     "- `sources`: A list of at least 5 distinct links to blogs, news, or other credible sources that justify the traits or relevance of the competitor\n\n"
     "Use real, specific links wherever possible (not generic homepages)."
+    "If you are not able to locate the company, please return an empty JSON.\n\n"
 )
 
 SOURCE_RANKING_PROMPT = Template("""
@@ -315,5 +316,10 @@ class BrandPower(EtlReportBase):
             history_messages=comp_llm_response.history_messages
         )
 
-        # TODO -- history context for the llm
+        source_ranking_response = self._llm_service_manager.run_task(
+            source_ranking_request
+        )
+        logging.info("Source ranking response received.")
+        logging.debug(f"Source ranking response: {source_ranking_response.response_content}")
+
         # return list_competitors_response, source_ranking_response

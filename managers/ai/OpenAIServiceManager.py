@@ -58,8 +58,7 @@ class OpenAIServiceManager(ILLMServiceManager):
 
         # Always prepend system prompt if not already included
         messages = [{"role": "system", "content": request_resource_model.system_prompt}] + history_messages
-        if not any(m["role"] == "user" for m in history_messages):
-            messages.append({"role": "user", "content": request_resource_model.prompt})
+        messages.append({"role": "user", "content": request_resource_model.prompt})
 
         # Determine response_type
         response_type = request_resource_model.response_type or "str"
