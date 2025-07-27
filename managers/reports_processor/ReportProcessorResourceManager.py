@@ -1,10 +1,7 @@
-from dataclasses import asdict
-from typing import Optional, Dict, Union
-
 from flask import jsonify
+from typing import Optional, Dict
 
 from abstractions.IServiceManagerBase import IServiceManagerBase
-from abstractions.IWebServiceManager import IWebServiceManager
 from abstractions.IResourceManager import IResourceManager
 from managers.ai.AIServiceHandler import AIServiceHandler
 from models.request.ReportProcessorRequestResourceModel import ReportProcessorRequestResourceModel
@@ -16,20 +13,10 @@ class ReportProcessorResourceManager(IResourceManager):
         self.__etl_service_manager = web_service_managers.get("etl_service_manager")
 
     def get(self, request_resource_model: ReportProcessorRequestResourceModel):
-
-        # response = self.__etl_service_manager.run_task(request_resource_model)
-
         return jsonify({"message": "Getting status", "data": []})
 
     def post(self, request_resource_model: ReportProcessorRequestResourceModel):
-        # TODO based on the request get the corresponding AI service manager
-
         llm_manager = AIServiceHandler.get_ai_service(request_resource_model.llm_config)
         self.__etl_service_manager.configure(llm_manager=llm_manager)
-
-        # TODO configure should be linking -- we need to pass some test LLM credentials and test
-        # TODO what else do we need to do? LLM should keep history no? or we should be ok
-
         response = self.__etl_service_manager.run_task(request_resource_model)
         return jsonify({"message": "Post request on task", "data": []})
-        # return jsonify({"message": "Recommendation generated", "data": [results]})

@@ -8,7 +8,10 @@ from typing import Dict, Any, TypeVar, List, Type
 import re
 import pandas as pd
 
+
 T = TypeVar("T")
+
+
 class Utility:
     logger = logging.getLogger(__name__)
     logger.setLevel(logging.DEBUG)  # Set default logging level to DEBUG
@@ -63,7 +66,9 @@ class Utility:
                 config = json.loads(content)
                 return config
         except json.JSONDecodeError as e:
-            Utility.error_log(f"JSONDecodeError: {e.msg} at line {e.lineno} column {e.colno}")
+            Utility.error_log(
+                f"JSONDecodeError: {e.msg} at line {e.lineno} column {e.colno}"
+            )
             Utility.error_log(f"Problematic JSON content: {content}")
         except FileNotFoundError:
             Utility.error_log(f"File not found: {json_path}")
@@ -79,7 +84,9 @@ class Utility:
                 json.dump(data, json_file, indent=4)
             Utility.log(f"Dictionary successfully written to {file_path}")
         except Exception as e:
-            Utility.error_log(f"An error occurred while writing to the JSON file: {e}")
+            Utility.error_log(
+                f"An error occurred while writing to the JSON file: {e}"
+            )
 
     @staticmethod
     def read_image(image_path: str) -> bytes:
@@ -102,7 +109,7 @@ class Utility:
         return trimmed_string
 
     @staticmethod
-    def clean_and_convert(value: any) -> float | int:
+    def clean_and_convert(value: any) -> float or int:
         if type(value) in [int, float]:
             return value
         # Use regex to keep only digits, a single dot, and an optional leading minus sign
@@ -162,8 +169,11 @@ class Utility:
                 dataclass_list.append(instance)
 
             Utility.debug_log(
-                f"Successfully converted DataFrame with {len(df)} rows to a list of {dataclass_type.__name__} instances.")
+                f"Successfully converted DataFrame with {len(df)} rows to a list of {dataclass_type.__name__} instances."
+            )
             return dataclass_list
         except Exception as e:
-            Utility.error_log(f"An error occurred while converting DataFrame to dataclass list: {e}")
+            Utility.error_log(
+                f"An error occurred while converting DataFrame to dataclass list: {e}"
+            )
             raise

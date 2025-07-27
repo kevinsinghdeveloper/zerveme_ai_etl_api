@@ -4,6 +4,7 @@ from managers.ReportJobsTaskManager import ReportJobTaskManager
 from models.request.ReportProcessorRequestResourceModel import ReportProcessorRequestResourceModel
 from abstractions.enumerations.JobStatusEnum import JobStatusEnum
 
+
 class TestReportJobTaskManager(unittest.TestCase):
     def setUp(self):
         self.etl_config = {"dummy": "config"}
@@ -16,7 +17,9 @@ class TestReportJobTaskManager(unittest.TestCase):
     def test_configure_sets_llm_manager(self):
         mock_llm_manager = Mock()
         self.manager.configure(llm_manager=mock_llm_manager)
-        self.assertEqual(self.manager._ReportJobTaskManager__llm_manager, mock_llm_manager)
+        self.assertEqual(
+            self.manager._ReportJobTaskManager__llm_manager, mock_llm_manager
+        )
 
     @patch('managers.ReportJobsTaskManager.ReportJobTaskManager._ReportJobTaskManager__get_report_instance')
     def test_run_task_success(self, mock_get_report_instance):
@@ -61,6 +64,7 @@ class TestReportJobTaskManager(unittest.TestCase):
         self.manager._ReportJobTaskManager__llm_manager = Mock()
         with self.assertRaises(Exception):
             self.manager.run_task(request)
+
 
 if __name__ == '__main__':
     unittest.main() 

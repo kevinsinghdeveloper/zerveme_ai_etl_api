@@ -1,6 +1,6 @@
 # TODO -> read config for serp api
 from abc import abstractmethod
-from typing import List, Union, Dict, Optional
+from typing import Dict, Optional
 
 from abstractions.IServiceManagerBase import IServiceManagerBase
 from abstractions.models.RequestResourceModel import RequestResourceModel

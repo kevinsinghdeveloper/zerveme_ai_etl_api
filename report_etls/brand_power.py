@@ -145,7 +145,6 @@ EXAMPLE_STRUCTURE_FOR_COMPETITOR_LIST = """
     ]
   }
 ]
-
 """
 
 LIST_COMPETITORS_BASE_PROMPT = Template(
@@ -233,7 +232,9 @@ class BrandPower(EtlReportBase):
     def __check_run_params(self):
         missing_fields = set(self.EXPECTED_RUN_PARAMS_FIELDS) - set(self._run_params.keys())
         if missing_fields:
-            raise ValueError(f"Missing required run parameters: {', '.join(missing_fields)}")
+            raise ValueError(
+                f"Missing required run parameters: {', '.join(missing_fields)}"
+            )
 
         for field in self.EXPECTED_RUN_PARAMS_FIELDS:
             if not self._run_params.get(field):
@@ -243,7 +244,10 @@ class BrandPower(EtlReportBase):
         if not target_industries:
             raise ValueError("Target industries cannot be empty.")
 
-        if not all(industry.lower() in (i.lower() for i in self.__industries) for industry in target_industries):
+        if not all(
+            industry.lower() in (i.lower() for i in self.__industries)
+            for industry in target_industries
+        ):
             raise ValueError("Invalid target industries specified.")
 
         logging.info("Run parameters validated successfully.")
@@ -307,7 +311,9 @@ class BrandPower(EtlReportBase):
             comp_prompt_request
         )
         logging.info("List competitors response received.")
-        logging.debug(f"List competitors response: {comp_llm_response.response_content}")
+        logging.debug(
+            f"List competitors response: {comp_llm_response.response_content}"
+        )
         # send source ranking prompt
         source_ranking_request = LLMRequestResourceModel(
             prompt=self._source_ranking_prompt,
@@ -320,6 +326,8 @@ class BrandPower(EtlReportBase):
             source_ranking_request
         )
         logging.info("Source ranking response received.")
-        logging.debug(f"Source ranking response: {source_ranking_response.response_content}")
+        logging.debug(
+            f"Source ranking response: {source_ranking_response.response_content}"
+        )
 
         # return list_competitors_response, source_ranking_response

@@ -105,5 +105,6 @@ class TestBrandPower(unittest.TestCase):
         self.assertIn("Generate prompts", self.brand_power._extract_pipeline_tasks)
         self.assertIn("Send prompts to LLM", self.brand_power._extract_pipeline_tasks)
 
+
 if __name__ == '__main__':
     unittest.main()

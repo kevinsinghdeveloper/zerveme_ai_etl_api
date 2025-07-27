@@ -3,10 +3,13 @@ from unittest.mock import Mock, patch
 from managers.reports_processor.ReportProcessorResourceManager import ReportProcessorResourceManager
 from models.request.ReportProcessorRequestResourceModel import ReportProcessorRequestResourceModel
 
+
 class TestReportProcessorResourceManager(unittest.TestCase):
     def setUp(self):
         self.mock_web_service_managers = {"etl_service_manager": Mock()}
-        self.manager = ReportProcessorResourceManager(web_service_managers=self.mock_web_service_managers)
+        self.manager = ReportProcessorResourceManager(
+            web_service_managers=self.mock_web_service_managers
+        )
         self.request_model = Mock(spec=ReportProcessorRequestResourceModel)
         self.request_model.llm_config = {"llm": "config"}  # Ensure llm_config attribute exists
 
@@ -32,6 +35,7 @@ class TestReportProcessorResourceManager(unittest.TestCase):
         mock_etl_service_manager.run_task.assert_called_once_with(self.request_model)
         mock_jsonify.assert_called_once()
         self.assertEqual(result["message"], "Post request on task")
+
 
 if __name__ == '__main__':
     unittest.main() 
