@@ -311,7 +311,8 @@ class BrandPower(EtlReportBase):
         source_ranking_request = LLMRequestResourceModel(
             prompt=self._source_ranking_prompt,
             system_prompt=TASK_SYS_PROMPT,
-            response_type="dict"
+            response_type="dict",
+            history_messages=comp_llm_response.history_messages
         )
 
         # TODO -- history context for the llm
