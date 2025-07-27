@@ -1,14 +1,16 @@
 import json
 import logging
+from string import Template
+
 from abstractions.EtlReportBase import EtlReportBase
 from abstractions.ILLMServiceManager import ILLMServiceManager
+from models.request.LLMRequestResourceModel import LLMRequestResourceModel
 from utility.Utility import Utility
 
 '''
-TODO !
+TODO:
 List competitors -> get source scores -> generate zerveme scores for each company -> generate report
 '''
-
 
 EXAMPLE_STRUCTURE_FOR_COMPETITOR_LIST = """
 [
@@ -144,40 +146,37 @@ EXAMPLE_STRUCTURE_FOR_COMPETITOR_LIST = """
   }
 ]
 
-
 """
 
-FORMAT_INSTRUCTIONS = (
-    "Please output a JSON list of the top 10 competitors for the company, ranked from 1 to 10. \n\n"
-    "Please include our target company \n\n"
+LIST_COMPETITORS_BASE_PROMPT = Template(
+    "Please list top 10 competitors for the company `$company_name` and website `$company_website` "
+    "in the `$industries` industries, in location `$location`. "
+    "Short description of this company is `$description`. "
+    "Known competitors are `$competitors`."
+)
+
+FORMAT_INSTRUCTIONS = Template(
+    "Please output a JSON list of the top 10 competitors for the company, ranked from 1 to 10.\n\n"
+    "Please include our target company\n\n"
     "Each competitor must have the following fields:\n\n"
     "- `rank`: Integer from 1 to 10\n"
     "- `name`: Name of the company\n"
-    "- `traits`: List of the top 2 traits, chosen from this mapping: {industry_traits_mapping}\n"
+    "- `traits`: List of the top 2 traits, chosen from this mapping: $industry_traits_mapping\n"
     "- `description`: A short 1-2 sentence description explaining why they are a competitor\n"
     "- `discoverability`: Integer from 1 to 10 indicating how easy it is to discover this competitor\n"
     "- `sources`: A list of at least 5 distinct links to blogs, news, or other credible sources that justify the traits or relevance of the competitor\n\n"
     "Use real, specific links wherever possible (not generic homepages)."
 )
 
-
-LIST_COMPETITORS_BASE_PROMPT = ("Please list top 10 competitors for the company` `{company_name}` and website `{company_website}` "
-                                "in the `{industries}` industries, in location `{location}`. "
-                                "Short description of this company is `{description}`."
-                                "Known competitors are `{competitors}`.")
-LIST_COMPETITORS_SYS_PROMPT = "You are an expert in market analysis and competitor identification."
-
-
-# TODO modify to a can pass the sources in as a parameter and industry
-SOURCE_RANKING_PROMPT = """
-Please provide a detailed list of technology news websites and blogs that are top sources for tech industry information. For each source, include:
+SOURCE_RANKING_PROMPT = Template("""
+Please provide a detailed list of $industry news websites and blogs that are top sources for $industry industry information. For each source, include:
 
 - `name`: The name of the website or blog
 - `score`: A popularity rating from 1 to 10, where 10 means highest popularity/user count and 1 means low popularity
 - `focus`: A brief description of the primary focus or specialty of the source (e.g., AI news, consumer tech, marketing tech)
 - `url`: The direct URL to the source's homepage or main technology section
 
-Please rank the list roughly by popularity and influence in the technology space, covering a mix of general tech, AI, marketing tech, and niche sites. Include at least 15 entries.
+Please rank the list roughly by popularity and influence in the $industry space, covering a mix of general tech, AI, marketing tech, and niche sites. Include at least 15 entries.
 
 Format the output as a JSON array of objects, for example:
 
@@ -190,8 +189,10 @@ Format the output as a JSON array of objects, for example:
   },
   ...
 ]
+""")
 
-"""
+TASK_SYS_PROMPT = "You are an expert in market analysis and competitor identification."
+
 
 class BrandPower(EtlReportBase):
     EXPECTED_RUN_PARAMS_FIELDS = [
@@ -205,43 +206,39 @@ class BrandPower(EtlReportBase):
 
     def __init__(self, run_params: dict, llm_service_manager: ILLMServiceManager):
         super().__init__(run_params, "brand_power", llm_service_manager)
-        # run params should contain ai configuration
+        self._prompt_data = {}
         self.__report_name = None
         self.__report_id = None
 
-        self.__industries = (Utility
-                             .read_in_json_file("report_etls/report_resources/brand_power_resources/industries.json"))
+        self.__industries = Utility.read_in_json_file(
+            "report_etls/report_resources/brand_power_resources/industries.json"
+        )
 
-        self.__top_industry_sources = (Utility
-                                     .read_in_json_file("report_etls/report_resources/brand_power_resources/top_industry_sources.json"))
+        self.__top_industry_sources = Utility.read_in_json_file(
+            "report_etls/report_resources/brand_power_resources/top_industry_sources.json"
+        )
 
         self.__system_context_prompt = None
 
     def configure_init_tasks(self):
-        self._pre_validation_pipeline_tasks  = {
+        self._pre_validation_pipeline_tasks = {
             "Check run params": self.__check_run_params
         }
         self._extract_pipeline_tasks = {
-            "Generate prompts": self.__craft_prompts
+            "Generate prompts": self.__generate_base_prompts,
+            "Send prompts to LLM": self.__send_prompts_to_llm
         }
-    def __check_run_params(self):
-        """
-        Validates the run parameters for the Brand Power report.
-        Ensures all required fields are present and correctly formatted.
-        """
-        missing_fields = set(self.EXPECTED_RUN_PARAMS_FIELDS) - set(self._run_params.keys())
 
+    def __check_run_params(self):
+        missing_fields = set(self.EXPECTED_RUN_PARAMS_FIELDS) - set(self._run_params.keys())
         if missing_fields:
             raise ValueError(f"Missing required run parameters: {', '.join(missing_fields)}")
 
-        # check if fields are not empty
         for field in self.EXPECTED_RUN_PARAMS_FIELDS:
             if not self._run_params.get(field):
                 raise ValueError(f"Run parameter '{field}' cannot be empty.")
 
-        # Check if target industries are valid
         target_industries = self._run_params.get("target_industries", [])
-
         if not target_industries:
             raise ValueError("Target industries cannot be empty.")
 
@@ -251,17 +248,14 @@ class BrandPower(EtlReportBase):
         logging.info("Run parameters validated successfully.")
 
     def __get_list_competitors_prompt(self):
-        """
-        Generates the prompt for listing competitors based on the run parameters.
-        """
         company_name = self._run_params.get("company_name")
         company_website = self._run_params.get("company_website")
-        industries = self._run_params.get("target_industries")
+        industries = self._run_params.get("target_industries", [])
         location = self._run_params.get("location")
         description = self._run_params.get("description_of_company", "")
         competitors = self._run_params.get("known_competitors", [])
 
-        return LIST_COMPETITORS_BASE_PROMPT.format(
+        return LIST_COMPETITORS_BASE_PROMPT.substitute(
             company_name=company_name,
             company_website=company_website,
             industries=",".join(industries),
@@ -270,23 +264,55 @@ class BrandPower(EtlReportBase):
             competitors=",".join(competitors)
         )
 
-    def __craft_prompts(self):
-        logging.info("Crafting prompts.")
+    def __generate_base_prompts(self):
+        logging.info("Crafting prompts...")
 
         list_competitors_prompt = self.__get_list_competitors_prompt()
+        industry_traits_mapping = self.__industries
 
-        industry_traits_mapping = self.__industries  # assuming this is a dict like { "technology": ["Scalable", ...] }
-
-        format_instructions = FORMAT_INSTRUCTIONS.format(
+        format_instructions = FORMAT_INSTRUCTIONS.substitute(
             industry_traits_mapping=json.dumps(industry_traits_mapping, indent=2)
         )
 
         full_prompt = f"{list_competitors_prompt}\n\n{format_instructions}"
 
-        self._prompt_data = {
-            "system": LIST_COMPETITORS_SYS_PROMPT,
+        self._prompt_data['list_competitors'] = {
+            "system": TASK_SYS_PROMPT,
             "user": full_prompt
         }
 
-        logging.info("Prompts crafted successfully.")
+        industry_list = self._run_params.get("target_industries") or ["technology"]
+        industry = industry_list[0]
 
+        self._source_ranking_prompt = SOURCE_RANKING_PROMPT.substitute(industry=industry)
+
+        self._prompt_data['source_ranking'] = {
+            "system": TASK_SYS_PROMPT,
+            "user": self._source_ranking_prompt
+        }
+
+    def __send_prompts_to_llm(self):
+        logging.info("Sending prompts to LLM...")
+
+        # send list competitors prompt, then use that to get the source ranking
+        comp_prompt_request = LLMRequestResourceModel(
+            prompt=self._prompt_data['list_competitors']['user'],
+            system_prompt=self._prompt_data['list_competitors']['system'],
+            examples=EXAMPLE_STRUCTURE_FOR_COMPETITOR_LIST,
+            response_type="dict"
+        )
+
+        comp_llm_response = self._llm_service_manager.run_task(
+            comp_prompt_request
+        )
+        logging.info("List competitors response received.")
+        logging.debug(f"List competitors response: {comp_llm_response.response_content}")
+        # send source ranking prompt
+        source_ranking_request = LLMRequestResourceModel(
+            prompt=self._source_ranking_prompt,
+            system_prompt=TASK_SYS_PROMPT,
+            response_type="dict"
+        )
+
+        # TODO -- history context for the llm
+        # return list_competitors_response, source_ranking_response

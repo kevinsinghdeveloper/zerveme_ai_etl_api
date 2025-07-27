@@ -5,6 +5,7 @@ from typing import List, Union
 from abstractions.IServiceManagerBase import IServiceManagerBase
 from abstractions.models import ResponseModel, ParameterModel
 from abstractions.models.RequestResourceModel import RequestResourceModel
+from models.request.LLMResponseResourceModel import LLMResponseResourceModel
 
 
 class ILLMServiceManager(IServiceManagerBase):
@@ -12,7 +13,7 @@ class ILLMServiceManager(IServiceManagerBase):
         super().__init__(config)
 
     @abstractmethod
-    def run_task(self, request_resource_model: RequestResourceModel):
+    def run_task(self, request_resource_model: RequestResourceModel) -> LLMResponseResourceModel:
         pass
 
     @abstractmethod
