@@ -67,21 +67,43 @@ class TestBrandPower(unittest.TestCase):
         self.assertIn("competitor2", prompt)
 
     @patch('logging.info')
-    def test_craft_prompts(self, mock_logging):
-        """Test prompt crafting process"""
-        self.brand_power._BrandPower__craft_prompts()
-        mock_logging.assert_called_with("Prompts crafted successfully.")
+    def test_generate_base_prompts_logs_and_sets_prompt_data(self, mock_logging):
+        self.brand_power._BrandPower__generate_base_prompts()
+        mock_logging.assert_called_with("Crafting prompts...")
+        # Check prompt_data structure
+        prompt_data = self.brand_power._prompt_data
+        self.assertIn('list_competitors', prompt_data)
+        self.assertIn('source_ranking', prompt_data)
+        self.assertIn('system', prompt_data['list_competitors'])
+        self.assertIn('user', prompt_data['list_competitors'])
+        self.assertIn('system', prompt_data['source_ranking'])
+        self.assertIn('user', prompt_data['source_ranking'])
+
+    @patch('logging.info')
+    @patch('logging.debug')
+    def test_send_prompts_to_llm(self, mock_debug, mock_info):
+        # Prepare prompt data
+        self.brand_power._BrandPower__generate_base_prompts()
+        # Mock LLM service manager and response
+        mock_response = Mock()
+        mock_response.response_content = '{"result": "ok"}'
+        mock_response.history_messages = ["history"]
+        self.brand_power._llm_service_manager.run_task.return_value = mock_response
+        # Call send prompts
+        self.brand_power._BrandPower__send_prompts_to_llm()
+        self.brand_power._llm_service_manager.run_task.assert_called()
+        mock_info.assert_any_call("Sending prompts to LLM...")
+        mock_info.assert_any_call("List competitors response received.")
+        mock_debug.assert_called()
 
     def test_configure_init_tasks(self):
         """Test initialization of pipeline tasks"""
         self.brand_power.configure_init_tasks()
-        
         # Verify pre-validation tasks
         self.assertIn("Check run params", self.brand_power._pre_validation_pipeline_tasks)
-        
         # Verify extract tasks
         self.assertIn("Generate prompts", self.brand_power._extract_pipeline_tasks)
-
+        self.assertIn("Send prompts to LLM", self.brand_power._extract_pipeline_tasks)
 
 if __name__ == '__main__':
     unittest.main()
