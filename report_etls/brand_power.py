@@ -207,8 +207,7 @@ class BrandPower(EtlReportBase):
     def __init__(self, run_params: dict, llm_service_manager: ILLMServiceManager):
         super().__init__(run_params, "brand_power", llm_service_manager)
         self._prompt_data = {}
-        self.__report_name = None
-        self.__report_id = None
+        self._llm_response_data = {}
 
         self.__industries = Utility.read_in_json_file(
             "report_etls/report_resources/brand_power_resources/industries.json"
@@ -217,8 +216,6 @@ class BrandPower(EtlReportBase):
         self.__top_industry_sources = Utility.read_in_json_file(
             "report_etls/report_resources/brand_power_resources/top_industry_sources.json"
         )
-
-        self.__system_context_prompt = None
 
     def configure_init_tasks(self):
         self._pre_validation_pipeline_tasks = {
@@ -330,4 +327,5 @@ class BrandPower(EtlReportBase):
             f"Source ranking response: {source_ranking_response.response_content}"
         )
 
-        # return list_competitors_response, source_ranking_response
+        self._llm_response_data['list_competitors'] = comp_llm_response
+        self._llm_response_data['source_ranking'] = source_ranking_response
