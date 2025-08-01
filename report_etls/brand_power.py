@@ -11,7 +11,8 @@ from utility.Utility import Utility
 
 '''
 TODO:
-List competitors -> get source scores -> generate zerveme scores for each company -> generate report
+List competitors -> get source scores -> generate zerveme scores for each
+company -> generate report
 '''
 
 EXAMPLE_STRUCTURE_FOR_COMPETITOR_LIST = """
@@ -20,7 +21,9 @@ EXAMPLE_STRUCTURE_FOR_COMPETITOR_LIST = """
     "rank": 1,
     "name": "SingleStore",
     "traits": ["High-performance", "Low-latency"],
-    "description": "SingleStore delivers industry-leading throughput and sub-second analytics on HTAP workloads with unified SQL engine and vector acceleration.",
+    "description": "SingleStore delivers industry-leading throughput and "
+                   "sub-second analytics on HTAP workloads with unified "
+                   "SQL engine and vector acceleration.",
     "sources": [
       "https://www.singlestore.com/blog/singlestore-kai-real-time-analytics-benchmarks/",
       "https://www.singlestore.com/blog/tpc-benchmarking-results/",
@@ -33,7 +36,9 @@ EXAMPLE_STRUCTURE_FOR_COMPETITOR_LIST = """
     "rank": 2,
     "name": "CockroachDB",
     "traits": ["Resilient", "Scalable"],
-    "description": "CockroachDB automatically handles node failures and network partitions while scaling horizontally across regions for global consistency.",
+    "description": "CockroachDB automatically handles node failures and "
+                   "network partitions while scaling horizontally across "
+                   "regions for global consistency.",
     "sources": [
       "https://www.cockroachlabs.com/blog/stress-testing-cockroachdb-resilience/",
       "https://dotcommagazine.com/2024/03/cockroachdb-a-fascinating-comprehensive-guide/",
@@ -46,7 +51,10 @@ EXAMPLE_STRUCTURE_FOR_COMPETITOR_LIST = """
     "rank": 3,
     "name": "Snowflake",
     "traits": ["Cloud-based", "Scalable"],
-    "description": "Snowflake’s decoupled storage and compute architecture enables elastic scaling and multi‑cloud analytics without infrastructure constraints.",
+    "description": "Snowflake's decoupled storage and compute "
+                   "architecture enables elastic scaling and "
+                   "multi‑cloud analytics without infrastructure "
+                   "constraints.",
     "sources": [
       "https://technologymagazine.com/articles/snowflake-a-transformative-force-in-data-and-analytics",
       "https://builtin.com/data-science/snowflake-cloud-data-platform",
@@ -59,7 +67,9 @@ EXAMPLE_STRUCTURE_FOR_COMPETITOR_LIST = """
     "rank": 4,
     "name": "PostgreSQL",
     "traits": ["Reliable", "Open-source"],
-    "description": "PostgreSQL is a mature, extensible open-source RDBMS praised for its reliability and strong SQL feature set across diverse workloads.",
+    "description": "PostgreSQL is a mature, extensible open-source "
+                   "RDBMS praised for its reliability and strong SQL "
+                   "feature set across diverse workloads.",
     "sources": [
       "https://www.g2.com/products/singlestore-singlestore/competitors/alternatives",
       "https://www.postgresql.org/about/",
@@ -72,7 +82,9 @@ EXAMPLE_STRUCTURE_FOR_COMPETITOR_LIST = """
     "rank": 5,
     "name": "MySQL",
     "traits": ["User-friendly", "Cost-effective"],
-    "description": "MySQL is widely adopted, easy to administer, and cost-efficient for web and application workloads, though lacking built-in HTAP support.",
+    "description": "MySQL is widely adopted, easy to administer, and "
+                   "cost-efficient for web and application workloads, "
+                   "though lacking built-in HTAP support.",
     "sources": [
       "https://www.g2.com/products/singlestore-singlestore/competitors/alternatives",
       "https://www.capterra.com/p/143032/MemSQL/alternatives/",
@@ -85,7 +97,9 @@ EXAMPLE_STRUCTURE_FOR_COMPETITOR_LIST = """
     "rank": 6,
     "name": "Amazon Aurora",
     "traits": ["Scalable", "Reliable"],
-    "description": "Aurora offers MySQL/PostgreSQL compatibility with high availability and auto-scaling in AWS-managed infrastructure, optimizing performance at scale.",
+    "description": "Aurora offers MySQL/PostgreSQL compatibility with "
+                   "high availability and auto-scaling in AWS-managed "
+                   "infrastructure, optimizing performance at scale.",
     "sources": [
       "https://www.g2.com/products/singlestore-singlestore/competitors/alternatives",
       "https://www.businesswire.com/news/home/20220615005393/en/SingleStore-Outshines-Major-Database-Competitors-in-TCO-Study",
@@ -98,7 +112,9 @@ EXAMPLE_STRUCTURE_FOR_COMPETITOR_LIST = """
     "rank": 7,
     "name": "IBM Db2",
     "traits": ["Reliable", "Secure"],
-    "description": "Db2 is an enterprise-grade RDBMS known for robust transactional performance, high security standards, and enterprise scalability.",
+    "description": "Db2 is an enterprise-grade RDBMS known for robust "
+                   "transactional performance, high security standards, "
+                   "and enterprise scalability.",
     "sources": [
       "https://www.g2.com/products/singlestore-singlestore/competitors/alternatives",
       "https://topbusinesssoftware.com/categories/distributed-databases/",
@@ -111,7 +127,9 @@ EXAMPLE_STRUCTURE_FOR_COMPETITOR_LIST = """
     "rank": 8,
     "name": "Google Cloud SQL",
     "traits": ["User-friendly", "Cloud-based"],
-    "description": "Cloud SQL is a fully managed relational service on Google Cloud offering ease‑of‑use, automated maintenance, and cloud-native scalability.",
+    "description": "Cloud SQL is a fully managed relational service "
+                   "on Google Cloud offering ease‑of‑use, automated "
+                   "maintenance, and cloud-native scalability.",
     "sources": [
       "https://www.g2.com/products/singlestore-singlestore/competitors/alternatives",
       "https://topbusinesssoftware.com/categories/distributed-databases/",
@@ -124,7 +142,9 @@ EXAMPLE_STRUCTURE_FOR_COMPETITOR_LIST = """
     "rank": 9,
     "name": "SAP HANA Cloud",
     "traits": ["High-performance", "Cloud-based"],
-    "description": "SAP HANA Cloud processes in-memory analytics and transactional workloads at scale with optimized performance in a cloud-native environment.",
+    "description": "SAP HANA Cloud processes in-memory analytics and "
+                   "transactional workloads at scale with optimized "
+                   "performance in a cloud-native environment.",
     "sources": [
       "https://www.g2.com/products/singlestore-singlestore/competitors/alternatives",
       "https://topbusinesssoftware.com/categories/distributed-databases/",
@@ -137,7 +157,10 @@ EXAMPLE_STRUCTURE_FOR_COMPETITOR_LIST = """
     "rank": 10,
     "name": "Snowflake",
     "traits": ["Analytical-optimized", "Scalable"],
-    "description": "Snowflake dominates for large-scale analytics workloads due to its elastic scalability, multi-cloud support, and separation of compute and storage.",
+    "description": "Snowflake dominates for large-scale analytics "
+                   "workloads due to its elastic scalability, "
+                   "multi-cloud support, and separation of compute "
+                   "and storage.",
     "sources": [
       "https://technologymagazine.com/articles/snowflake-a-transformative-force-in-data-and-analytics",
       "https://builtin.com/data-science/snowflake-cloud-data-platform",
@@ -150,35 +173,52 @@ EXAMPLE_STRUCTURE_FOR_COMPETITOR_LIST = """
 """
 
 LIST_COMPETITORS_BASE_PROMPT = Template(
-    "Please list top 10 competitors for the company `$company_name` and website `$company_website` "
-    "in the `$industries` industries, in location `$location`. "
-    "Short description of this company is `$description`. "
-    "Known competitors are `$competitors`."
+    "Please list top 10 competitors for the company `$company_name` "
+    "and website `$company_website` in the `$industries` industries, "
+    "in location `$location`. Short description of this company is "
+    "`$description`. Known competitors are `$competitors`."
 )
 
 FORMAT_INSTRUCTIONS = Template(
-    "Please output a JSON list of the top 10 competitors for the company, ranked from 1 to 10.\n\n"
+    "Please output a JSON list of the top 10 competitors for the "
+    "company, ranked from 1 to 10.\n\n"
     "Please include our target company\n\n"
     "Each competitor must have the following fields:\n\n"
     "- `rank`: Integer from 1 to 10\n"
-    "- `name`: Name of the company\n, if our target company please use the input format"
-    "- `traits`: List of the top 2 traits, chosen from this mapping: $industry_traits_mapping\n"
-    "- `description`: A short 1-2 sentence description explaining why they are a competitor\n"
-    "- `discoverability`: Integer from 1 to 10 indicating how easy it is to discover this competitor\n"
-    "- `sources`: A list of at least 5 distinct links to blogs, news, or other credible sources that justify the traits or relevance of the competitor\n\n"
-    "Use real, specific links wherever possible (not generic homepages)."
-    "If you are not able to locate the company, please return an empty JSON. DO NOT ASSUME, IF TARGET COMPANY DOES NOT EXIST PLEASE DO NOT GUESS\n\n"
+    "- `name`: Name of the company\n, if our target company "
+    "please use the input format"
+    "- `traits`: List of the top 2 traits, chosen from this "
+    "mapping: $industry_traits_mapping\n"
+    "- `description`: A short 1-2 sentence description "
+    "explaining why they are a competitor\n"
+    "- `discoverability`: Integer from 1 to 10 indicating how "
+    "easy it is to discover this competitor\n"
+    "- `sources`: A list of at least 5 distinct links to blogs, "
+    "news, or other credible sources that justify the traits or "
+    "relevance of the competitor\n\n"
+    "Use real, specific links wherever possible (not generic "
+    "homepages)."
+    "If you are not able to locate the company, please return an "
+    "empty JSON. DO NOT ASSUME, IF TARGET COMPANY DOES NOT EXIST "
+    "PLEASE DO NOT GUESS\n\n"
 )
 
 SOURCE_RANKING_PROMPT = Template("""
-Please provide a detailed list of $industry news websites and blogs that are top sources for $industry industry information. For each source, include:
+Please provide a detailed list of $industry news websites and blogs 
+that are top sources for $industry industry information. For each 
+source, include:
 
 - `name`: The name of the website or blog
-- `score`: A popularity rating from 1 to 10, where 10 means highest popularity/user count and 1 means low popularity
-- `focus`: A brief description of the primary focus or specialty of the source (e.g., AI news, consumer tech, marketing tech)
-- `url`: The direct URL to the source's homepage or main technology section
+- `score`: A popularity rating from 1 to 10, where 10 means highest 
+popularity/user count and 1 means low popularity
+- `focus`: A brief description of the primary focus or specialty of the 
+source (e.g., AI news, consumer tech, marketing tech)
+- `url`: The direct URL to the source's homepage or main technology 
+section
 
-Please rank the list roughly by popularity and influence in the $industry space, covering a mix of general tech, AI, marketing tech, and niche sites. Include at least 15 entries.
+Please rank the list roughly by popularity and influence in the 
+$industry space, covering a mix of general tech, AI, marketing tech, 
+and niche sites. Include at least 15 entries.
 
 Format the output as a JSON array of objects, for example:
 
@@ -193,13 +233,16 @@ Format the output as a JSON array of objects, for example:
 ]
 """)
 
-TASK_SYS_PROMPT = "You are an expert in market analysis and competitor identification."
+TASK_SYS_PROMPT = ("You are an expert in market analysis and "
+                   "competitor identification.")
+
 
 @dataclass
 class CompanyDataResponse:
     name: str
     competitors: List[str]
     sources_from_pull: List[str]
+
 
 class BrandPower(EtlReportBase):
     EXPECTED_RUN_PARAMS_FIELDS = [
@@ -211,16 +254,19 @@ class BrandPower(EtlReportBase):
         "known_competitors"
     ]
 
-    def __init__(self, run_params: dict, llm_service_manager: ILLMServiceManager):
+    def __init__(self, run_params: dict, 
+                 llm_service_manager: ILLMServiceManager):
         super().__init__(run_params, "brand_power", llm_service_manager)
         self._llm_response_data = {}
 
         self.__industries = Utility.read_in_json_file(
-            "report_etls/report_resources/brand_power_resources/industries.json"
+            "report_etls/report_resources/brand_power_resources/"
+            "industries.json"
         )
 
         self.__top_industry_sources = Utility.read_in_json_file(
-            "report_etls/report_resources/brand_power_resources/top_industry_sources.json"
+            "report_etls/report_resources/brand_power_resources/"
+            "top_industry_sources.json"
         )
 
     def configure_init_tasks(self):
@@ -232,15 +278,19 @@ class BrandPower(EtlReportBase):
         }
 
     def __check_run_params(self):
-        missing_fields = set(self.EXPECTED_RUN_PARAMS_FIELDS) - set(self._run_params.keys())
+        missing_fields = (set(self.EXPECTED_RUN_PARAMS_FIELDS) - 
+                          set(self._run_params.keys()))
         if missing_fields:
             raise ValueError(
-                f"Missing required run parameters: {', '.join(missing_fields)}"
+                f"Missing required run parameters: "
+                f"{', '.join(missing_fields)}"
             )
 
         for field in self.EXPECTED_RUN_PARAMS_FIELDS:
             if not self._run_params.get(field):
-                raise ValueError(f"Run parameter '{field}' cannot be empty.")
+                raise ValueError(
+                    f"Run parameter '{field}' cannot be empty."
+                )
 
         target_industries = self._run_params.get("target_industries", [])
         if not target_industries:
@@ -280,16 +330,21 @@ class BrandPower(EtlReportBase):
     def __generate_base_prompts(self, **param_overrides):
         logging.info("Crafting prompts...")
 
-        list_competitors_prompt = self.__get_list_competitors_prompt(**param_overrides)
+        list_competitors_prompt = self.__get_list_competitors_prompt(
+            **param_overrides
+        )
         industry_traits_mapping = self.__industries
 
         format_instructions = FORMAT_INSTRUCTIONS.substitute(
-            industry_traits_mapping=json.dumps(industry_traits_mapping, indent=2)
+            industry_traits_mapping=json.dumps(
+                industry_traits_mapping, indent=2
+            )
         )
 
         full_prompt = f"{list_competitors_prompt}\n\n{format_instructions}"
 
-        industry_list = self._run_params.get("target_industries") or ["technology"]
+        industry_list = (self._run_params.get("target_industries") or 
+                         ["technology"])
         industry = industry_list[0]
 
         return {
@@ -299,44 +354,54 @@ class BrandPower(EtlReportBase):
             },
             'source_ranking': {
                 "system": TASK_SYS_PROMPT,
-                "user": SOURCE_RANKING_PROMPT.substitute(industry=industry)
+                "user": SOURCE_RANKING_PROMPT.substitute(
+                    industry=industry
+                )
             }
         }
 
     def __get_llm_data_for_report(self):
-        # call this __generate_base_prompts here to get company specific info dybanically
+        # call this __generate_base_prompts here to get company specific 
+        # info dynamically
         target_company_prompt_data = self.__generate_base_prompts()
         logging.info("Generated prompts for target company.")
         target_company_response = self.__send_prompts_to_llm(
             prompt_data=target_company_prompt_data['list_competitors'],
-            source_ranking_prompt=target_company_prompt_data['source_ranking']
+            source_ranking_prompt=target_company_prompt_data[
+                'source_ranking'
+            ]
         )
 
         if not target_company_response.competitors:
             logging.warning("No competitors found for the target company.")
             return
 
-        competitors = [company['name'] for company in target_company_response.competitors
-                       if company['name'].lower() != target_company_response.name.lower()]
+        competitors = [
+            company['name'] for company in target_company_response.competitors
+            if company['name'].lower() != target_company_response.name.lower()
+        ]
 
         for comp in competitors:
             logging.info(f"Processing competitor: {comp}")
             prompt_data = self.__generate_base_prompts(company_name=comp)
-            comp_response = self.__send_prompts_to_llm(
+            self.__send_prompts_to_llm(
                 prompt_data=prompt_data['list_competitors'],
                 source_ranking_prompt=prompt_data['source_ranking']
             )
-        # TODO we need to store the output somewhere for testing or we are going to go broke
+        # TODO we need to store the output somewhere for testing or we 
+        # are going to go broke
 
         # call __send_prompts_to_llm get our target company data
         # using data call again for each competitor to get their data
-        # we should save this data so we don't have to call the LLM again -- also useful for debugging
+        # we should save this data so we don't have to call the LLM 
+        # again -- also useful for debugging
         pass
 
     def __send_prompts_to_llm(self, prompt_data, source_ranking_prompt):
         logging.info("Sending prompts to LLM...")
 
-        # send list competitors prompt, then use that to get the source ranking
+        # send list competitors prompt, then use that to get the source 
+        # ranking
         comp_prompt_request = LLMRequestResourceModel(
             prompt=prompt_data['user'],
             system_prompt=prompt_data['system'],
@@ -349,7 +414,8 @@ class BrandPower(EtlReportBase):
         )
         logging.info("List competitors response received.")
         logging.debug(
-            f"List competitors response: {comp_llm_response.response_content}"
+            f"List competitors response: "
+            f"{comp_llm_response.response_content}"
         )
         # send source ranking prompt
         source_ranking_request = LLMRequestResourceModel(
@@ -364,12 +430,17 @@ class BrandPower(EtlReportBase):
         )
         logging.info("Source ranking response received.")
         logging.debug(
-            f"Source ranking response: {source_ranking_response.response_content}"
+            f"Source ranking response: "
+            f"{source_ranking_response.response_content}"
         )
 
         # double check fields
         return CompanyDataResponse(
             name=self._run_params.get("company_name"),
-            competitors=comp_llm_response.response_content.get("competitors", []),
-            sources_from_pull=source_ranking_response.response_content.get("sources", [])
+            competitors=comp_llm_response.response_content.get(
+                "competitors", []
+            ),
+            sources_from_pull=source_ranking_response.response_content.get(
+                "sources", []
+            )
         )

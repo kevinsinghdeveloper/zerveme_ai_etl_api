@@ -8,7 +8,6 @@ from models.request.ReportProcessorRequestResourceModel import (
 )
 
 
-
 class TestReportProcessorResourceManager(unittest.TestCase):
     def setUp(self):
         self.mock_web_service_managers = {"etl_service_manager": Mock()}
