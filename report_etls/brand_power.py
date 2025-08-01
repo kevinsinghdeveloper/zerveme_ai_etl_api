@@ -326,6 +326,8 @@ class BrandPower(EtlReportBase):
                 prompt_data=prompt_data['list_competitors'],
                 source_ranking_prompt=prompt_data['source_ranking']
             )
+        # TODO we need to store the output somewhere for testing or we are going to go broke
+
         # call __send_prompts_to_llm get our target company data
         # using data call again for each competitor to get their data
         # we should save this data so we don't have to call the LLM again -- also useful for debugging
