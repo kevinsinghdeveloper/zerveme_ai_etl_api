@@ -167,7 +167,7 @@ FORMAT_INSTRUCTIONS = Template(
     "- `discoverability`: Integer from 1 to 10 indicating how easy it is to discover this competitor\n"
     "- `sources`: A list of at least 5 distinct links to blogs, news, or other credible sources that justify the traits or relevance of the competitor\n\n"
     "Use real, specific links wherever possible (not generic homepages)."
-    "If you are not able to locate the company, please return an empty JSON.\n\n"
+    "If you are not able to locate the company, please return an empty JSON. DO NOT ASSUME, IF TARGET COMPANY DOES NOT EXIST PLEASE DO NOT GUESS\n\n"
 )
 
 SOURCE_RANKING_PROMPT = Template("""
@@ -311,6 +311,21 @@ class BrandPower(EtlReportBase):
             prompt_data=target_company_prompt_data['list_competitors'],
             source_ranking_prompt=target_company_prompt_data['source_ranking']
         )
+
+        if not target_company_response.competitors:
+            logging.warning("No competitors found for the target company.")
+            return
+
+        competitors = [company['name'] for company in target_company_response.competitors
+                       if company['name'] != target_company_response.name]
+
+        for comp in competitors:
+            logging.info(f"Processing competitor: {comp}")
+            prompt_data = self.__generate_base_prompts(company_name=comp)
+            comp_response = self.__send_prompts_to_llm(
+                prompt_data=prompt_data['list_competitors'],
+                source_ranking_prompt=prompt_data['source_ranking']
+            )
         # call __send_prompts_to_llm get our target company data
         # using data call again for each competitor to get their data
         # we should save this data so we don't have to call the LLM again -- also useful for debugging
