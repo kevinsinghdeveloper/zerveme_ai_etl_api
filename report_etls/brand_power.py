@@ -161,7 +161,7 @@ FORMAT_INSTRUCTIONS = Template(
     "Please include our target company\n\n"
     "Each competitor must have the following fields:\n\n"
     "- `rank`: Integer from 1 to 10\n"
-    "- `name`: Name of the company\n"
+    "- `name`: Name of the company\n, if our target company please use the input format"
     "- `traits`: List of the top 2 traits, chosen from this mapping: $industry_traits_mapping\n"
     "- `description`: A short 1-2 sentence description explaining why they are a competitor\n"
     "- `discoverability`: Integer from 1 to 10 indicating how easy it is to discover this competitor\n"
@@ -317,7 +317,7 @@ class BrandPower(EtlReportBase):
             return
 
         competitors = [company['name'] for company in target_company_response.competitors
-                       if company['name'] != target_company_response.name]
+                       if company['name'].lower() != target_company_response.name.lower()]
 
         for comp in competitors:
             logging.info(f"Processing competitor: {comp}")
