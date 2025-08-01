@@ -11,11 +11,21 @@ class ILLMServiceManager(IServiceManagerBase):
         super().__init__(config)
 
     @abstractmethod
-    def run_task(self, request_resource_model: RequestResourceModel) -> LLMResponseResourceModel:
+    def run_task(self,
+                 request_resource_model: RequestResourceModel
+                 ) -> LLMResponseResourceModel:
         pass
 
     @abstractmethod
     def get_base_prompt(self, prompt, llm_instructions):
         pass
+
+    # def configure_llm(self):
+    #     config = self.get_config()
+    #     api_key = config["api_key"]
+    #
+    #     self.__model = OpenAI(api_key=api_key)
+    #     self.__genai_config = config['gen_config']
+    #     self.__model_name = config['model_name']
 
     # tokens etc?

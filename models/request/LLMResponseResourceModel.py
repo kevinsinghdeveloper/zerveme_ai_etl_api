@@ -1,7 +1,6 @@
 from dataclasses import dataclass
-from typing import Optional, List, Union
+from typing import Optional, Union
 
-from abstractions.models.RequestResourceModel import RequestResourceModel
 from abstractions.models.ResponseModel import ResponseModel
 
 
