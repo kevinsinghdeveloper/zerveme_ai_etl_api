@@ -9,6 +9,8 @@ import re
 import pandas as pd
 
 T = TypeVar("T")
+
+
 class Utility:
     logger = logging.getLogger(__name__)
     logger.setLevel(logging.DEBUG)  # Set default logging level to DEBUG
@@ -20,12 +22,16 @@ class Utility:
 
         # Create file handler and set level to DEBUG
         os.makedirs('logs', exist_ok=True)
-        log_filename = f"logs/app_{datetime.now().strftime('%Y-%m-%d')}.log"
+        log_filename = (
+            f"logs/app_{datetime.now().strftime('%Y-%m-%d')}.log"
+        )
         file_handler = logging.FileHandler(log_filename)
         file_handler.setLevel(logging.DEBUG)
 
         # Create formatter
-        formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+        formatter = logging.Formatter(
+            '%(asctime)s - %(levelname)s - %(message)s'
+        )
 
         # Add formatter to handlers
         console_handler.setFormatter(formatter)
@@ -63,7 +69,9 @@ class Utility:
                 config = json.loads(content)
                 return config
         except json.JSONDecodeError as e:
-            Utility.error_log(f"JSONDecodeError: {e.msg} at line {e.lineno} column {e.colno}")
+            Utility.error_log(
+                f"JSONDecodeError: {e.msg} at line {e.lineno} column {e.colno}"
+            )
             Utility.error_log(f"Problematic JSON content: {content}")
         except FileNotFoundError:
             Utility.error_log(f"File not found: {json_path}")
@@ -77,9 +85,13 @@ class Utility:
         try:
             with open(file_path, 'w') as json_file:
                 json.dump(data, json_file, indent=4)
-            Utility.log(f"Dictionary successfully written to {file_path}")
+            Utility.log(
+                f"Dictionary successfully written to {file_path}"
+            )
         except Exception as e:
-            Utility.error_log(f"An error occurred while writing to the JSON file: {e}")
+            Utility.error_log(
+                f"An error occurred while writing to the JSON file: {e}"
+            )
 
     @staticmethod
     def read_image(image_path: str) -> bytes:
@@ -105,16 +117,22 @@ class Utility:
     def clean_and_convert(value: any) -> float | int:
         if type(value) in [int, float]:
             return value
-        # Use regex to keep only digits, a single dot, and an optional leading minus sign
+        # Use regex to keep only digits, a single dot, and an optional
+        # leading minus sign
         cleaned_value = re.sub(r"[^\d.-]", "", value)
 
-        # Handle edge cases where the string is empty or invalid (e.g., just a dot/minus sign)
+        # Handle edge cases where the string is empty or invalid
+        # (e.g., just a dot/minus sign)
         if not cleaned_value or cleaned_value in {"-", "."}:
             return 0
 
         try:
-            # Convert to int if there's no decimal point, otherwise convert to float
-            return int(cleaned_value) if "." not in cleaned_value else float(cleaned_value)
+            # Convert to int if there's no decimal point, otherwise convert to
+            # float
+            return (
+                int(cleaned_value) if "." not in cleaned_value
+                else float(cleaned_value)
+            )
         except ValueError:
             # Return 0 if the conversion fails
             return 0
@@ -127,7 +145,9 @@ class Utility:
 
         # Ensure the first element is a dataclass
         if not is_dataclass(dataclass_list[0]):
-            raise ValueError("The provided list must contain dataclass instances.")
+            raise ValueError(
+                "The provided list must contain dataclass instances."
+            )
 
         # Convert list of dataclasses to list of dictionaries
         dict_list = [asdict(item) for item in dataclass_list]
@@ -137,13 +157,16 @@ class Utility:
         return df
 
     @staticmethod
-    def dataframe_to_dataclass(df: pd.DataFrame, dataclass_type: Type[T]) -> List[T]:
+    def dataframe_to_dataclass(
+        df: pd.DataFrame, dataclass_type: Type[T]
+    ) -> List[T]:
         """
         Converts a pandas DataFrame to a list of dataclass instances.
 
         Args:
             df (pd.DataFrame): The DataFrame to convert.
-            dataclass_type (Type[T]): The dataclass type to convert each row into.
+            dataclass_type (Type[T]): The dataclass type to convert each
+                row into.
 
         Returns:
             List[T]: A list of dataclass instances.
@@ -156,14 +179,20 @@ class Utility:
 
         try:
             for index, row in df.iterrows():
-                # Convert the row to a dictionary and unpack it into the dataclass
+                # Convert the row to a dictionary and unpack it into the
+                # dataclass
                 data = row.to_dict()
                 instance = dataclass_type(**data)
                 dataclass_list.append(instance)
 
             Utility.debug_log(
-                f"Successfully converted DataFrame with {len(df)} rows to a list of {dataclass_type.__name__} instances.")
+                f"Successfully converted DataFrame with {len(df)} rows to a "
+                f"list of {dataclass_type.__name__} instances."
+            )
             return dataclass_list
         except Exception as e:
-            Utility.error_log(f"An error occurred while converting DataFrame to dataclass list: {e}")
+            Utility.error_log(
+                f"An error occurred while converting DataFrame to dataclass "
+                f"list: {e}"
+            )
             raise

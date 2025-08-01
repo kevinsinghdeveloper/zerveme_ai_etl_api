@@ -20,5 +20,3 @@ class IController:
     @abstractmethod
     def get_resource_manager(self):
         pass
-
-

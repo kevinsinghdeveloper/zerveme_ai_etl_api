@@ -11,4 +11,3 @@ class LLMRequestResourceModel(RequestResourceModel):
     examples: Optional[str] = None  # Optional examples to guide the LLM
     response_type: Optional[str] = None
     history_messages: Optional[List[str]] = None
-

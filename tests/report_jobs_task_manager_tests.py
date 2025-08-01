@@ -1,8 +1,11 @@
 import unittest
 from unittest.mock import Mock, patch
 from managers.ReportJobsTaskManager import ReportJobTaskManager
-from models.request.ReportProcessorRequestResourceModel import ReportProcessorRequestResourceModel
+from models.request.ReportProcessorRequestResourceModel import (
+    ReportProcessorRequestResourceModel
+)
 from abstractions.enumerations.JobStatusEnum import JobStatusEnum
+
 
 class TestReportJobTaskManager(unittest.TestCase):
     def setUp(self):
@@ -16,9 +19,14 @@ class TestReportJobTaskManager(unittest.TestCase):
     def test_configure_sets_llm_manager(self):
         mock_llm_manager = Mock()
         self.manager.configure(llm_manager=mock_llm_manager)
-        self.assertEqual(self.manager._ReportJobTaskManager__llm_manager, mock_llm_manager)
+        self.assertEqual(
+            self.manager._ReportJobTaskManager__llm_manager, mock_llm_manager
+        )
 
-    @patch('managers.ReportJobsTaskManager.ReportJobTaskManager._ReportJobTaskManager__get_report_instance')
+    @patch(
+        'managers.ReportJobsTaskManager.ReportJobTaskManager'
+        '._ReportJobTaskManager__get_report_instance'
+    )
     def test_run_task_success(self, mock_get_report_instance):
         mock_etl_report = Mock()
         mock_get_report_instance.return_value = mock_etl_report
@@ -35,7 +43,10 @@ class TestReportJobTaskManager(unittest.TestCase):
         self.assertIn("Report run completed", result["message"])
         mock_etl_report.run_etl.assert_called_once()
 
-    @patch('managers.ReportJobsTaskManager.ReportJobTaskManager._ReportJobTaskManager__get_report_instance')
+    @patch(
+        'managers.ReportJobsTaskManager.ReportJobTaskManager'
+        '._ReportJobTaskManager__get_report_instance'
+    )
     def test_run_task_unsupported_type(self, mock_get_report_instance):
         mock_etl_report = Mock()
         mock_get_report_instance.return_value = mock_etl_report
@@ -49,7 +60,10 @@ class TestReportJobTaskManager(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.manager.run_task(request)
 
-    @patch('managers.ReportJobsTaskManager.ReportJobTaskManager._ReportJobTaskManager__get_report_instance')
+    @patch(
+        'managers.ReportJobsTaskManager.ReportJobTaskManager'
+        '._ReportJobTaskManager__get_report_instance'
+    )
     def test_run_task_no_etl_report(self, mock_get_report_instance):
         mock_get_report_instance.return_value = None
         request = ReportProcessorRequestResourceModel(
@@ -62,5 +76,6 @@ class TestReportJobTaskManager(unittest.TestCase):
         with self.assertRaises(Exception):
             self.manager.run_task(request)
 
+
 if __name__ == '__main__':
-    unittest.main() 
+    unittest.main()

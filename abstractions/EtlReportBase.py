@@ -10,8 +10,10 @@ def run_pipeline(pipeline_tasks: dict):
         task()
         logging.info(f"Task {name} completed successfully.")
 
+
 class EtlReportBase(ABC):
-    def __init__(self, run_params: dict, etl_name: str, llm_service_manager: ILLMServiceManager):
+    def __init__(self, run_params: dict, etl_name: str,
+                 llm_service_manager: ILLMServiceManager):
         self._run_params = run_params
         self._llm_service_manager = llm_service_manager
 
@@ -22,7 +24,8 @@ class EtlReportBase(ABC):
         self._post_validation_pipeline_tasks = {}
 
     def run_etl(self):
-        logging.info(f"Running competitor tracking ETL process with config: {self._run_params}")
+        logging.info(f"Running competitor tracking ETL process with "
+                     f"config: {self._run_params}")
 
         self.configure_init_tasks()
         self.run_pre_validation()
@@ -30,7 +33,8 @@ class EtlReportBase(ABC):
         self.run_transform_process_tasks()
         self.run_post_validation()
 
-        return {"status": "success", "message": "Competitor tracking completed."}
+        return {"status": "success",
+                "message": "Competitor tracking completed."}
 
     def run_pre_validation(self):
         run_pipeline(self._pre_validation_pipeline_tasks)

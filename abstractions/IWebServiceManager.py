@@ -15,12 +15,13 @@ class IWebServiceManager:
         return self.__params.copy()
 
     @abstractmethod
-    def get(self, request_resource_model: RequestResourceModel) -> Union[List[ResponseModel] | None]:
+    def get(self,
+            request_resource_model: RequestResourceModel
+            ) -> Union[List[ResponseModel] | None]:
         pass
 
     @abstractmethod
     def put(self, parameter: ParameterModel):
         pass
-
 
     # tokens etc?

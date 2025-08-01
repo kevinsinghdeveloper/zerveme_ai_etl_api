@@ -7,7 +7,8 @@ import datetime
 
 app = Flask(__name__)
 
-# Secret key for JWT encoding/decoding (make sure to store securely in production)
+# Secret key for JWT encoding/decoding
+# (make sure to store securely in production)
 app.config['SECRET_KEY'] = 'your_secret_key'
 
 
@@ -20,7 +21,8 @@ class RecommendRequest:
 
 # Function to create a unique API key (for demonstration purposes)
 def create_api_key():
-    # In a production scenario, this would involve more security (e.g., UUIDs or hashing)
+    # In a production scenario, this would involve more security
+    # (e.g., UUIDs or hashing)
     return 'sample_api_key'
 
 
@@ -60,7 +62,8 @@ def login_session():
     token = jwt.encode(
         {
             'user': 'example_user',
-            'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=1)  # Token expires in 1 hour
+            'exp': datetime.datetime.utcnow() +
+            datetime.timedelta(hours=1)  # Token expires in 1 hour
         },
         app.config['SECRET_KEY'],
         algorithm="HS256"
@@ -83,9 +86,12 @@ def recommend():
 
         # Print values for debugging
         print("##############################################")
-        print("URL received from frontend:\n", recommend_request.itemUrl)
-        print("Product Title received from frontend:\n", recommend_request.itemTitle)
-        print("Product price received from frontend:\n", recommend_request.itemPrice)
+        print("URL received from frontend:\n",
+              recommend_request.itemUrl)
+        print("Product Title received from frontend:\n",
+              recommend_request.itemTitle)
+        print("Product price received from frontend:\n",
+              recommend_request.itemPrice)
 
         # Validate required fields
         if not recommend_request.itemUrl:
@@ -94,7 +100,9 @@ def recommend():
         # Process recommendation logic here...
 
         # Return a successful response
-        return jsonify({"message": "Recommendation generated", "data": asdict(recommend_request)})
+        return jsonify({"message": "Recommendation generated",
+                       "data": asdict(recommend_request)})
 
     except (TypeError, ValueError) as e:
-        return jsonify({"error": "Invalid input parameters", "details": str(e)}), 400
+        return jsonify({"error": "Invalid input parameters",
+                       "details": str(e)}), 400

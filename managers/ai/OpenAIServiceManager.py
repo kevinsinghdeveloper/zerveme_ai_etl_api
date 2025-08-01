@@ -1,21 +1,11 @@
-import inspect
 import json
 import logging
-from typing import Union, List
 
-from abstractions.EtlReportBase import EtlReportBase
-from abstractions.IETLServiceManager import IETLServiceManager
-import os
-import importlib.util
 from openai import OpenAI
 
 from abstractions.ILLMServiceManager import ILLMServiceManager
-from abstractions.models import ResponseModel
-from abstractions.models.RequestResourceModel import RequestResourceModel
 from models.request.LLMRequestResourceModel import LLMRequestResourceModel
 from models.request.LLMResponseResourceModel import LLMResponseResourceModel
-from models.request.ReportProcessorRequestResourceModel import ReportProcessorRequestResourceModel
-from models.response.LLMResponseModel import LLMResponseModel
 
 
 class OpenAIServiceManager(ILLMServiceManager):
@@ -46,7 +36,10 @@ class OpenAIServiceManager(ILLMServiceManager):
 
         return system_prompt, base_prompt
 
-    def run_task(self, request_resource_model: LLMRequestResourceModel) -> LLMResponseResourceModel:
+    def run_task(
+            self,
+            request_resource_model: LLMRequestResourceModel
+    ) -> LLMResponseResourceModel:
         # Construct prompts
         system_prompt, base_prompt = self.get_base_prompt(
             request_resource_model.prompt,
@@ -57,9 +50,13 @@ class OpenAIServiceManager(ILLMServiceManager):
         history_messages = request_resource_model.history_messages or []
 
         # Always prepend system prompt if not already included
-        messages = [{"role": "system", "content": request_resource_model.system_prompt}] + history_messages
+        messages = [
+            {"role": "system", "content": request_resource_model.system_prompt}
+        ] + history_messages
         if not any(m["role"] == "user" for m in history_messages):
-            messages.append({"role": "user", "content": request_resource_model.prompt})
+            messages.append(
+                {"role": "user", "content": request_resource_model.prompt}
+            )
 
         # Determine response_type
         response_type = request_resource_model.response_type or "str"
@@ -77,7 +74,9 @@ class OpenAIServiceManager(ILLMServiceManager):
         cleaned_response, usage = self.__process_and_extract_response(response)
 
         # Save updated message history
-        new_history = messages + [{"role": "assistant", "content": cleaned_response}]
+        new_history = messages + [
+            {"role": "assistant", "content": cleaned_response}
+        ]
 
         # Convert to dict if needed
         if response_type == "dict":

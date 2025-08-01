@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import Optional
 
 from abstractions.models.ResponseModel import ResponseModel
 
@@ -8,13 +7,13 @@ from abstractions.models.ResponseModel import ResponseModel
 class RecResponseModel(ResponseModel):
     data: dict
     # TODO unsure what to return since we need to get results from serp
-'''
-product_title: Optional[str]
-product_id: Optional[str]
-url: Optional[str]
-merchant: Optional[str]
-price: Optional[str]
-product_title: Optional[str]
-product_title: Optional[str]
-product_title: Optional[str]
-'''
+    '''
+    product_title: Optional[str]
+    product_id: Optional[str]
+    url: Optional[str]
+    merchant: Optional[str]
+    price: Optional[str]
+    product_title: Optional[str]
+    product_title: Optional[str]
+    product_title: Optional[str]
+    '''
