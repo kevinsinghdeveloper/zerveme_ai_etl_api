@@ -1,6 +1,8 @@
 import json
 import logging
 from string import Template
+from typing import List
+from dataclasses import dataclass
 
 from abstractions.EtlReportBase import EtlReportBase
 from abstractions.ILLMServiceManager import ILLMServiceManager
@@ -193,6 +195,11 @@ Format the output as a JSON array of objects, for example:
 
 TASK_SYS_PROMPT = "You are an expert in market analysis and competitor identification."
 
+@dataclass
+class CompanyDataResponse:
+    name: str
+    competitors: List[str]
+    sources_from_pull: List[str]
 
 class BrandPower(EtlReportBase):
     EXPECTED_RUN_PARAMS_FIELDS = [
@@ -206,7 +213,6 @@ class BrandPower(EtlReportBase):
 
     def __init__(self, run_params: dict, llm_service_manager: ILLMServiceManager):
         super().__init__(run_params, "brand_power", llm_service_manager)
-        self._prompt_data = {}
         self._llm_response_data = {}
 
         self.__industries = Utility.read_in_json_file(
@@ -222,8 +228,7 @@ class BrandPower(EtlReportBase):
             "Check run params": self.__check_run_params
         }
         self._extract_pipeline_tasks = {
-            "Generate prompts": self.__generate_base_prompts,
-            "Send prompts to LLM": self.__send_prompts_to_llm
+            "Get prompt data from LLM": self.__get_llm_data_for_report
         }
 
     def __check_run_params(self):
@@ -249,7 +254,13 @@ class BrandPower(EtlReportBase):
 
         logging.info("Run parameters validated successfully.")
 
-    def __get_list_competitors_prompt(self):
+    # TODO add more test cases for this
+    def __get_list_competitors_prompt(self, **param_overrides):
+
+        # if param_overrides is provided, use it to override the run_params
+        if param_overrides:
+            self._run_params.update(param_overrides)
+
         company_name = self._run_params.get("company_name")
         company_website = self._run_params.get("company_website")
         industries = self._run_params.get("target_industries", [])
@@ -266,10 +277,10 @@ class BrandPower(EtlReportBase):
             competitors=",".join(competitors)
         )
 
-    def __generate_base_prompts(self):
+    def __generate_base_prompts(self, **param_overrides):
         logging.info("Crafting prompts...")
 
-        list_competitors_prompt = self.__get_list_competitors_prompt()
+        list_competitors_prompt = self.__get_list_competitors_prompt(**param_overrides)
         industry_traits_mapping = self.__industries
 
         format_instructions = FORMAT_INSTRUCTIONS.substitute(
@@ -278,28 +289,40 @@ class BrandPower(EtlReportBase):
 
         full_prompt = f"{list_competitors_prompt}\n\n{format_instructions}"
 
-        self._prompt_data['list_competitors'] = {
-            "system": TASK_SYS_PROMPT,
-            "user": full_prompt
-        }
-
         industry_list = self._run_params.get("target_industries") or ["technology"]
         industry = industry_list[0]
 
-        self._source_ranking_prompt = SOURCE_RANKING_PROMPT.substitute(industry=industry)
-
-        self._prompt_data['source_ranking'] = {
-            "system": TASK_SYS_PROMPT,
-            "user": self._source_ranking_prompt
+        return {
+            'list_competitors': {
+                "system": TASK_SYS_PROMPT,
+                "user": full_prompt
+            },
+            'source_ranking': {
+                "system": TASK_SYS_PROMPT,
+                "user": SOURCE_RANKING_PROMPT.substitute(industry=industry)
+            }
         }
 
-    def __send_prompts_to_llm(self):
+    def __get_llm_data_for_report(self):
+        # call this __generate_base_prompts here to get company specific info dybanically
+        target_company_prompt_data = self.__generate_base_prompts()
+        logging.info("Generated prompts for target company.")
+        target_company_response = self.__send_prompts_to_llm(
+            prompt_data=target_company_prompt_data['list_competitors'],
+            source_ranking_prompt=target_company_prompt_data['source_ranking']
+        )
+        # call __send_prompts_to_llm get our target company data
+        # using data call again for each competitor to get their data
+        # we should save this data so we don't have to call the LLM again -- also useful for debugging
+        pass
+
+    def __send_prompts_to_llm(self, prompt_data, source_ranking_prompt):
         logging.info("Sending prompts to LLM...")
 
         # send list competitors prompt, then use that to get the source ranking
         comp_prompt_request = LLMRequestResourceModel(
-            prompt=self._prompt_data['list_competitors']['user'],
-            system_prompt=self._prompt_data['list_competitors']['system'],
+            prompt=prompt_data['user'],
+            system_prompt=prompt_data['system'],
             examples=EXAMPLE_STRUCTURE_FOR_COMPETITOR_LIST,
             response_type="dict"
         )
@@ -313,7 +336,7 @@ class BrandPower(EtlReportBase):
         )
         # send source ranking prompt
         source_ranking_request = LLMRequestResourceModel(
-            prompt=self._source_ranking_prompt,
+            prompt=source_ranking_prompt['user'],
             system_prompt=TASK_SYS_PROMPT,
             response_type="dict",
             history_messages=comp_llm_response.history_messages
@@ -327,5 +350,9 @@ class BrandPower(EtlReportBase):
             f"Source ranking response: {source_ranking_response.response_content}"
         )
 
-        self._llm_response_data['list_competitors'] = comp_llm_response
-        self._llm_response_data['source_ranking'] = source_ranking_response
+        # double check fields
+        return CompanyDataResponse(
+            name=self._run_params.get("company_name"),
+            competitors=comp_llm_response.response_content.get("competitors", []),
+            sources_from_pull=source_ranking_response.response_content.get("sources", [])
+        )
