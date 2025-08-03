@@ -381,13 +381,27 @@ class BrandPower(EtlReportBase):
             if company['name'].lower() != target_company_response.name.lower()
         ]
 
+        # store the target company data
+        self._llm_response_data["target_company"] = {
+            target_company_response.name: {
+                    "company_data_response": target_company_response
+                }
+        }
+
+        self._llm_response_data["competitors"] = {}
         for comp in competitors:
             logging.info(f"Processing competitor: {comp}")
             prompt_data = self.__generate_base_prompts(company_name=comp)
-            self.__send_prompts_to_llm(
+            response_data = self.__send_prompts_to_llm(
                 prompt_data=prompt_data['list_competitors'],
                 source_ranking_prompt=prompt_data['source_ranking']
             )
+
+            self._llm_response_data["competitors"] = {
+                response_data.name: {
+                    "company_data_response": response_data
+                }
+            }
         # TODO we need to store the output somewhere for testing or we 
         # are going to go broke
 
