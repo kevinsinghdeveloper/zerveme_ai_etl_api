@@ -284,6 +284,9 @@ class BrandPower(EtlReportBase):
         self._extract_pipeline_tasks = {
             "Get prompt data from LLM": self.__get_llm_data_for_report
         }
+        self._transform_process_pipeline_tasks = {
+            "Transform and generate report": self.__transform_and_generate_report
+        }
 
     def __check_run_params(self):
         missing_fields = (set(self.EXPECTED_RUN_PARAMS_FIELDS) - 
@@ -474,7 +477,6 @@ class BrandPower(EtlReportBase):
             f"{source_ranking_response.response_content}"
         )
 
-        # double check fields
         return CompanyDataResponse(
             name=self._run_params.get("company_name"),
             competitors=comp_llm_response.response_content.get(
@@ -484,3 +486,7 @@ class BrandPower(EtlReportBase):
                 "sources", []
             )
         )
+
+    # TODO implement this
+    def __transform_and_generate_report(self):
+        pass
