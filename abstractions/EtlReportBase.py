@@ -41,6 +41,7 @@ class EtlReportBase(ABC):
         self.run_transform_process_tasks()
         self.run_post_validation()
 
+        # TODO update
         return {"status": "success",
                 "message": "Competitor tracking completed."}
 
