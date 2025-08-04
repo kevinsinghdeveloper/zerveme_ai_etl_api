@@ -1,6 +1,9 @@
 import unittest
+import json
+import os
+import tempfile
 from unittest.mock import Mock, patch
-from report_etls.brand_power import BrandPower
+from report_etls.brand_power import BrandPower, CompanyDataResponse
 
 
 class TestBrandPower(unittest.TestCase):
@@ -18,6 +21,9 @@ class TestBrandPower(unittest.TestCase):
         self.brand_power = BrandPower(
             self.base_config, self.llm_service_manager
         )
+        # Set up temporary directory for cache tests
+        self.temp_dir = tempfile.mkdtemp()
+        self.temp_cache_file = os.path.join(self.temp_dir, "test_cache.json")
 
     def test_init_with_valid_config(self):
         """Test initialization with valid configuration"""
@@ -73,39 +79,6 @@ class TestBrandPower(unittest.TestCase):
         self.assertIn("competitor1", prompt)
         self.assertIn("competitor2", prompt)
 
-    @patch('logging.info')
-    def test_generate_base_prompts_logs_and_sets_prompt_data(
-            self, mock_logging
-    ):
-        self.brand_power._BrandPower__generate_base_prompts()
-        mock_logging.assert_called_with("Crafting prompts...")
-        # Check prompt_data structure
-        prompt_data = self.brand_power._prompt_data
-        self.assertIn('list_competitors', prompt_data)
-        self.assertIn('source_ranking', prompt_data)
-        self.assertIn('system', prompt_data['list_competitors'])
-        self.assertIn('user', prompt_data['list_competitors'])
-        self.assertIn('system', prompt_data['source_ranking'])
-        self.assertIn('user', prompt_data['source_ranking'])
-
-    @patch('logging.info')
-    @patch('logging.debug')
-    def test_send_prompts_to_llm(self, mock_debug, mock_info):
-        # Prepare prompt data
-        self.brand_power._BrandPower__generate_base_prompts()
-        # Mock LLM service manager and response
-        mock_response = Mock()
-        mock_response.response_content = '{"result": "ok"}'
-        mock_response.history_messages = ["history"]
-        self.brand_power._llm_service_manager.run_task.return_value = (
-            mock_response
-        )
-        # Call send prompts
-        self.brand_power._BrandPower__send_prompts_to_llm()
-        self.brand_power._llm_service_manager.run_task.assert_called()
-        mock_info.assert_any_call("Sending prompts to LLM...")
-        mock_info.assert_any_call("List competitors response received.")
-        mock_debug.assert_called()
 
     def test_configure_init_tasks(self):
         """Test initialization of pipeline tasks"""
@@ -117,11 +90,231 @@ class TestBrandPower(unittest.TestCase):
         )
         # Verify extract tasks
         self.assertIn(
-            "Generate prompts", self.brand_power._extract_pipeline_tasks
+            "Get prompt data from LLM", self.brand_power._extract_pipeline_tasks
         )
-        self.assertIn(
-            "Send prompts to LLM", self.brand_power._extract_pipeline_tasks
+
+    def tearDown(self):
+        """Clean up temporary files after each test."""
+        if os.path.exists(self.temp_cache_file):
+            os.remove(self.temp_cache_file)
+        os.rmdir(self.temp_dir)
+
+    def test_cache_initialization(self):
+        """Test that cache-related attributes are properly initialized"""
+        self.assertEqual(self.brand_power._use_cache, True)  # Default value
+        self.assertIsInstance(self.brand_power._llm_response_data, dict)
+        self.assertEqual(self.brand_power._cache_file, "cache/brand_power.json")
+
+    def test_cache_initialization_with_use_cache_false(self):
+        """Test cache initialization when use_cache is set to False"""
+        config_with_cache_false = self.base_config.copy()
+        config_with_cache_false["use_cache"] = False
+        brand_power = BrandPower(config_with_cache_false, self.llm_service_manager)
+        self.assertEqual(brand_power._use_cache, False)
+
+    @patch('os.makedirs')
+    @patch('builtins.open', create=True)
+    @patch('json.dump')
+    def test_save_cache(self, mock_json_dump, mock_open, mock_makedirs):
+        """Test cache saving functionality"""
+        # Set up test data
+        self.brand_power._llm_response_data = {"test": "data"}
+        self.brand_power._cache_file = self.temp_cache_file
+        
+        # Call save_cache
+        self.brand_power.save_cache()
+        
+        # Verify directory creation and file operations
+        mock_makedirs.assert_called_once()
+        mock_open.assert_called_once()
+        mock_json_dump.assert_called_once_with(
+            {"test": "data"}, 
+            mock_open.return_value.__enter__.return_value, 
+            indent=2, 
+            default=str
         )
+
+    def test_load_cache_file_not_exists(self):
+        """Test load_cache when cache file doesn't exist"""
+        self.brand_power._cache_file = "nonexistent_file.json"
+        result = self.brand_power.load_cache()
+        self.assertFalse(result)
+
+    def test_load_cache_use_cache_false(self):
+        """Test load_cache when use_cache is False"""
+        self.brand_power._use_cache = False
+        # Create a cache file
+        with open(self.temp_cache_file, 'w') as f:
+            json.dump({"test": "data"}, f)
+        self.brand_power._cache_file = self.temp_cache_file
+        
+        result = self.brand_power.load_cache()
+        self.assertFalse(result)
+
+    def test_load_cache_success(self):
+        """Test successful cache loading"""
+        # Create test cache data
+        test_data = {"target_company": {"test": "data"}}
+        with open(self.temp_cache_file, 'w') as f:
+            json.dump(test_data, f)
+        
+        self.brand_power._cache_file = self.temp_cache_file
+        result = self.brand_power.load_cache()
+        
+        self.assertTrue(result)
+        self.assertEqual(self.brand_power._llm_response_data, test_data)
+
+    def test_is_cached_with_use_cache_true(self):
+        """Test is_cached when use_cache is True"""
+        self.brand_power._use_cache = True
+        self.brand_power._llm_response_data = {"test_key": "test_value"}
+        
+        self.assertTrue(self.brand_power.is_cached("test_key"))
+        self.assertFalse(self.brand_power.is_cached("nonexistent_key"))
+
+    def test_is_cached_with_use_cache_false(self):
+        """Test is_cached when use_cache is False"""
+        self.brand_power._use_cache = False
+        self.brand_power._llm_response_data = {"test_key": "test_value"}
+        
+        self.assertFalse(self.brand_power.is_cached("test_key"))
+
+    @patch('os.makedirs')
+    @patch('builtins.open', create=True)
+    @patch('json.dump')
+    def test_save_cache_with_use_cache_false(self, mock_json_dump, mock_open, mock_makedirs):
+        """Test that save_cache does nothing when use_cache is False"""
+        self.brand_power._use_cache = False
+        self.brand_power._llm_response_data = {"test": "data"}
+        
+        # Call save_cache
+        self.brand_power.save_cache()
+        
+        # Verify no file operations occurred
+        mock_makedirs.assert_not_called()
+        mock_open.assert_not_called()
+        mock_json_dump.assert_not_called()
+
+
+class TestCompanyDataResponse(unittest.TestCase):
+    def test_from_dict_complete_data(self):
+        """Test CompanyDataResponse.from_dict with complete data"""
+        test_dict = {
+            "name": "Test Company",
+            "competitors": ["Competitor 1", "Competitor 2"],
+            "sources_from_pull": ["source1.com", "source2.com"]
+        }
+        
+        response = CompanyDataResponse.from_dict(test_dict)
+        
+        self.assertEqual(response.name, "Test Company")
+        self.assertEqual(response.competitors, ["Competitor 1", "Competitor 2"])
+        self.assertEqual(response.sources_from_pull, ["source1.com", "source2.com"])
+
+    def test_from_dict_missing_fields(self):
+        """Test CompanyDataResponse.from_dict with missing fields"""
+        test_dict = {"name": "Test Company"}
+        
+        response = CompanyDataResponse.from_dict(test_dict)
+        
+        self.assertEqual(response.name, "Test Company")
+        self.assertEqual(response.competitors, [])
+        self.assertEqual(response.sources_from_pull, [])
+
+    def test_from_dict_empty_dict(self):
+        """Test CompanyDataResponse.from_dict with empty dictionary"""
+        response = CompanyDataResponse.from_dict({})
+        
+        self.assertEqual(response.name, "")
+        self.assertEqual(response.competitors, [])
+        self.assertEqual(response.sources_from_pull, [])
+
+
+class TestCacheDataConversion(unittest.TestCase):
+    def setUp(self):
+        """Set up test fixtures"""
+        self.base_config = {
+            "target_industries": ["Technology"],
+            "company_name": "test_company",
+            "description_of_company": "Test company description",
+            "company_website": "www.testcompany.com",
+            "location": "Test Location",
+            "known_competitors": ["competitor1", "competitor2"]
+        }
+        self.llm_service_manager = Mock()
+        self.brand_power = BrandPower(self.base_config, self.llm_service_manager)
+
+    def test_convert_cached_data_to_objects_target_company(self):
+        """Test conversion of cached target company data to objects"""
+        # Set up test data with dictionary format (as it would be loaded from JSON)
+        self.brand_power._llm_response_data = {
+            "target_company": {
+                "TestCorp": {
+                    "company_data_response": {
+                        "name": "TestCorp",
+                        "competitors": ["Comp1", "Comp2"],
+                        "sources_from_pull": ["source1.com"]
+                    }
+                }
+            }
+        }
+        
+        # Call the conversion method
+        self.brand_power._convert_cached_data_to_objects()
+        
+        # Verify the data was converted to CompanyDataResponse object
+        target_company_data = self.brand_power._llm_response_data["target_company"]["TestCorp"]["company_data_response"]
+        self.assertIsInstance(target_company_data, CompanyDataResponse)
+        self.assertEqual(target_company_data.name, "TestCorp")
+        self.assertEqual(target_company_data.competitors, ["Comp1", "Comp2"])
+
+    def test_convert_cached_data_to_objects_competitors(self):
+        """Test conversion of cached competitor data to objects"""
+        # Set up test data with dictionary format
+        self.brand_power._llm_response_data = {
+            "competitors": {
+                "Competitor1": {
+                    "company_data_response": {
+                        "name": "Competitor1",
+                        "competitors": ["Other1", "Other2"],
+                        "sources_from_pull": ["comp1source.com"]
+                    }
+                }
+            }
+        }
+        
+        # Call the conversion method
+        self.brand_power._convert_cached_data_to_objects()
+        
+        # Verify the data was converted to CompanyDataResponse object
+        competitor_data = self.brand_power._llm_response_data["competitors"]["Competitor1"]["company_data_response"]
+        self.assertIsInstance(competitor_data, CompanyDataResponse)
+        self.assertEqual(competitor_data.name, "Competitor1")
+        self.assertEqual(competitor_data.competitors, ["Other1", "Other2"])
+
+    def test_convert_cached_data_already_objects(self):
+        """Test conversion when data is already CompanyDataResponse objects"""
+        # Set up test data with already converted objects
+        response_obj = CompanyDataResponse(
+            name="TestCorp",
+            competitors=["Comp1"],
+            sources_from_pull=["source1.com"]
+        )
+        self.brand_power._llm_response_data = {
+            "target_company": {
+                "TestCorp": {
+                    "company_data_response": response_obj
+                }
+            }
+        }
+        
+        # Call the conversion method
+        self.brand_power._convert_cached_data_to_objects()
+        
+        # Verify the object remains unchanged
+        target_company_data = self.brand_power._llm_response_data["target_company"]["TestCorp"]["company_data_response"]
+        self.assertIsInstance(target_company_data, CompanyDataResponse)
+        self.assertEqual(target_company_data.name, "TestCorp")
 
 
 if __name__ == '__main__':

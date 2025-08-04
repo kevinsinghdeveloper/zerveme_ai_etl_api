@@ -58,6 +58,8 @@ class EtlReportBase(ABC):
 
     def save_cache(self):
         """Save LLM response data to cache file for debugging and testing"""
+        if not self._use_cache:
+            return
         os.makedirs(os.path.dirname(self._cache_file), exist_ok=True)
         with open(self._cache_file, 'w') as f:
             json.dump(self._llm_response_data, f, indent=2, default=str)
@@ -76,13 +78,6 @@ class EtlReportBase(ABC):
         """Check if a specific key is already cached and use_cache is True"""
         return self._use_cache and key in self._llm_response_data
 
-    def get_cached_data(self, key: str):
-        """Get cached data for a specific key"""
-        return self._llm_response_data.get(key)
-
-    def set_cached_data(self, key: str, data):
-        """Set cached data for a specific key"""
-        self._llm_response_data[key] = data
 
     @abstractmethod
     def configure_init_tasks(self):
