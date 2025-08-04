@@ -394,8 +394,11 @@ class BrandPower(EtlReportBase):
         }
 
         self._llm_response_data["competitors"] = {}
+
+        comp_count = len(competitors)
+        i = 1
         for comp in competitors:
-            logging.info(f"Processing competitor: {comp}")
+            logging.info(f"Processing competitor: {comp}... ({i}/{comp_count})")
             prompt_data = self.__generate_base_prompts(company_name=comp)
             response_data = self.__send_prompts_to_llm(
                 prompt_data=prompt_data['list_competitors'],

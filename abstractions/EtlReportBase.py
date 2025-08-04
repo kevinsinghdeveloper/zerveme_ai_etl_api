@@ -28,8 +28,7 @@ class EtlReportBase(ABC):
         # Initialize caching
         self._llm_response_data = {}
         self._use_cache = run_params.get('use_cache', True)
-        company_name = run_params.get('company_name', 'unknown')
-        self._cache_file = f"cache/{etl_name}_{company_name}.json"
+        self._cache_file = f"cache/{etl_name}.json"
 
     def run_etl(self):
         logging.info(f"Running competitor tracking ETL process with "
