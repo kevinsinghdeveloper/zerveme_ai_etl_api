@@ -257,7 +257,6 @@ class BrandPower(EtlReportBase):
     def __init__(self, run_params: dict, 
                  llm_service_manager: ILLMServiceManager):
         super().__init__(run_params, "brand_power", llm_service_manager)
-        self._llm_response_data = {}
 
         self.__industries = Utility.read_in_json_file(
             "report_etls/report_resources/brand_power_resources/"
@@ -361,6 +360,12 @@ class BrandPower(EtlReportBase):
         }
 
     def __get_llm_data_for_report(self):
+        # Load cache first - if cache exists, use it entirely
+        if self.load_cache():
+            logging.info("Using cached LLM response data")
+            return
+            
+        # No cache found, proceed with LLM calls
         # call this __generate_base_prompts here to get company specific 
         # info dynamically
         target_company_prompt_data = self.__generate_base_prompts()
@@ -397,19 +402,13 @@ class BrandPower(EtlReportBase):
                 source_ranking_prompt=prompt_data['source_ranking']
             )
 
-            self._llm_response_data["competitors"] = {
-                response_data.name: {
-                    "company_data_response": response_data
-                }
+            # Always store response
+            self._llm_response_data["competitors"][response_data.name] = {
+                "company_data_response": response_data
             }
-        # TODO we need to store the output somewhere for testing or we 
-        # are going to go broke
-
-        # call __send_prompts_to_llm get our target company data
-        # using data call again for each competitor to get their data
-        # we should save this data so we don't have to call the LLM 
-        # again -- also useful for debugging
-        pass
+        
+        # Always save cache
+        self.save_cache()
 
     def __send_prompts_to_llm(self, prompt_data, source_ranking_prompt):
         logging.info("Sending prompts to LLM...")

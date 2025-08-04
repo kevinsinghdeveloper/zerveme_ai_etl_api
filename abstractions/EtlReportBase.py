@@ -1,4 +1,6 @@
+import json
 import logging
+import os
 from abc import abstractmethod, ABC
 
 from abstractions.ILLMServiceManager import ILLMServiceManager
@@ -22,6 +24,12 @@ class EtlReportBase(ABC):
         self._extract_pipeline_tasks = {}
         self._transform_process_pipeline_tasks = {}
         self._post_validation_pipeline_tasks = {}
+        
+        # Initialize caching
+        self._llm_response_data = {}
+        self._use_cache = run_params.get('use_cache', True)
+        company_name = run_params.get('company_name', 'unknown')
+        self._cache_file = f"cache/{etl_name}_{company_name}.json"
 
     def run_etl(self):
         logging.info(f"Running competitor tracking ETL process with "
@@ -47,6 +55,34 @@ class EtlReportBase(ABC):
 
     def run_transform_process_tasks(self):
         run_pipeline(self._transform_process_pipeline_tasks)
+
+    def save_cache(self):
+        """Save LLM response data to cache file for debugging and testing"""
+        os.makedirs(os.path.dirname(self._cache_file), exist_ok=True)
+        with open(self._cache_file, 'w') as f:
+            json.dump(self._llm_response_data, f, indent=2, default=str)
+        logging.info(f"Cache saved to {self._cache_file}")
+
+    def load_cache(self):
+        """Load cached LLM response data if available and use_cache is True"""
+        if self._use_cache and os.path.exists(self._cache_file):
+            with open(self._cache_file, 'r') as f:
+                self._llm_response_data = json.load(f)
+            logging.info(f"Cache loaded from {self._cache_file}")
+            return True
+        return False
+
+    def is_cached(self, key: str) -> bool:
+        """Check if a specific key is already cached and use_cache is True"""
+        return self._use_cache and key in self._llm_response_data
+
+    def get_cached_data(self, key: str):
+        """Get cached data for a specific key"""
+        return self._llm_response_data.get(key)
+
+    def set_cached_data(self, key: str, data):
+        """Set cached data for a specific key"""
+        self._llm_response_data[key] = data
 
     @abstractmethod
     def configure_init_tasks(self):
