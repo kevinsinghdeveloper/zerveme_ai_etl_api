@@ -242,6 +242,15 @@ class CompanyDataResponse:
     name: str
     competitors: List[str]
     sources_from_pull: List[str]
+    
+    @classmethod
+    def from_dict(cls, data: dict):
+        """Convert cached dictionary data back to CompanyDataResponse"""
+        return cls(
+            name=data.get('name', ''),
+            competitors=data.get('competitors', []),
+            sources_from_pull=data.get('sources_from_pull', [])
+        )
 
 
 class BrandPower(EtlReportBase):
@@ -363,6 +372,7 @@ class BrandPower(EtlReportBase):
         # Load cache first - if cache exists, use it entirely
         if self.load_cache():
             logging.info("Using cached LLM response data")
+            self._convert_cached_data_to_objects()
             return
             
         # No cache found, proceed with LLM calls
@@ -412,6 +422,20 @@ class BrandPower(EtlReportBase):
         
         # Always save cache
         self.save_cache()
+
+    def _convert_cached_data_to_objects(self):
+        """Convert cached dictionary data back to CompanyDataResponse objects"""
+        if "target_company" in self._llm_response_data:
+            for company_name, company_data in self._llm_response_data["target_company"].items():
+                if isinstance(company_data["company_data_response"], dict):
+                    self._llm_response_data["target_company"][company_name]["company_data_response"] = \
+                        CompanyDataResponse.from_dict(company_data["company_data_response"])
+        
+        if "competitors" in self._llm_response_data:
+            for company_name, company_data in self._llm_response_data["competitors"].items():
+                if isinstance(company_data["company_data_response"], dict):
+                    self._llm_response_data["competitors"][company_name]["company_data_response"] = \
+                        CompanyDataResponse.from_dict(company_data["company_data_response"])
 
     def __send_prompts_to_llm(self, prompt_data, source_ranking_prompt):
         logging.info("Sending prompts to LLM...")
