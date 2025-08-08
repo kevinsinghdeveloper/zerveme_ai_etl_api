@@ -479,12 +479,10 @@ class BrandPower(EtlReportBase):
 
         return CompanyDataResponse(
             name=self._run_params.get("company_name"),
-            competitors=comp_llm_response.response_content.get(
-                "competitors", []
-            ),
-            sources_from_pull=source_ranking_response.response_content.get(
-                "sources", []
-            )
+            competitors=list(comp_llm_response.response_content.values())[0]
+                if comp_llm_response.response_content else [],
+            sources_from_pull=list(source_ranking_response.response_content.values())[0]
+                if source_ranking_response.response_content else []
         )
 
     # TODO implement this
@@ -502,6 +500,8 @@ class BrandPower(EtlReportBase):
 
         # calculate the score for target company
         # include recommendations on how to improve the score (sources missing?)
+
+        # get ranked sources df we can display as well
 
         # calculate the score of each competitor
 

@@ -27,7 +27,7 @@ class EtlReportBase(ABC):
         
         # Initialize caching
         self._llm_response_data = {}
-        self._use_cache = run_params.get('use_cache', True)
+        self._use_cache = run_params.get('use_cache', False)
         self._cache_file = f"cache/{etl_name}.json"
 
     def run_etl(self):

@@ -74,7 +74,7 @@ class OpenAIServiceManager(ILLMServiceManager):
         cleaned_response, usage = self.__process_and_extract_response(response)
 
         # Save updated message history
-        new_history = messages + [
+        new_history = history_messages + [
             {"role": "assistant", "content": cleaned_response}
         ]
 
