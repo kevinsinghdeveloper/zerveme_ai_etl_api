@@ -498,6 +498,21 @@ class BrandPower(EtlReportBase):
         target_company_data = self._llm_response_data.get("target_company", {})
         competitors_data = self._llm_response_data.get("competitors", {})
 
+        # a lot going on, and potentials
+
+        # calculate the score for target company
+        # include recommendations on how to improve the score (sources missing?)
+
+        # calculate the score of each competitor
+
+        # feed llm --> llm can generate a summary report for us [optional bonus]
+
+        # save data as DF
+
+        # store in db
+
+        # return response for .NET API
+
 
 
 
