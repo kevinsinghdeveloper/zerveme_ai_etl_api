@@ -489,4 +489,15 @@ class BrandPower(EtlReportBase):
 
     # TODO implement this
     def __transform_and_generate_report(self):
-        pass
+        if not self._llm_response_data:
+            logging.error("No LLM response data available to transform.")
+            return
+
+        logging.info("Transforming and generating report...")
+
+        target_company_data = self._llm_response_data.get("target_company", {})
+        competitors_data = self._llm_response_data.get("competitors", {})
+
+
+
+
