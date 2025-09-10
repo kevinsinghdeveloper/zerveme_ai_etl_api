@@ -27,7 +27,7 @@ class EtlReportBase(ABC):
         
         # Initialize caching
         self._llm_response_data = {}
-        self._use_cache = run_params.get('use_cache', False)
+        self._use_cache = run_params.get('use_cache', True)
         self._cache_file = f"cache/{etl_name}.json"
 
     def run_etl(self):
@@ -56,13 +56,19 @@ class EtlReportBase(ABC):
     def run_transform_process_tasks(self):
         run_pipeline(self._transform_process_pipeline_tasks)
 
+    def _json_serializer(self, obj):
+        """Custom JSON serializer for objects that have to_dict method"""
+        if hasattr(obj, 'to_dict') and callable(getattr(obj, 'to_dict')):
+            return obj.to_dict()
+        return str(obj)
+
     def save_cache(self):
         """Save LLM response data to cache file for debugging and testing"""
         if not self._use_cache:
             return
         os.makedirs(os.path.dirname(self._cache_file), exist_ok=True)
         with open(self._cache_file, 'w') as f:
-            json.dump(self._llm_response_data, f, indent=2, default=str)
+            json.dump(self._llm_response_data, f, indent=2, default=self._json_serializer)
         logging.info(f"Cache saved to {self._cache_file}")
 
     def load_cache(self):

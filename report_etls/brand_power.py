@@ -240,8 +240,16 @@ TASK_SYS_PROMPT = ("You are an expert in market analysis and "
 @dataclass
 class CompanyDataResponse:
     name: str
-    competitors: List[str]
-    sources_from_pull: List[str]
+    competitors: List[dict]
+    sources_from_pull: List[dict]
+    
+    def to_dict(self):
+        """Convert CompanyDataResponse to dictionary for JSON serialization"""
+        return {
+            'name': self.name,
+            'competitors': self.competitors,
+            'sources_from_pull': self.sources_from_pull
+        }
     
     @classmethod
     def from_dict(cls, data: dict):
@@ -422,6 +430,8 @@ class BrandPower(EtlReportBase):
             self._llm_response_data["competitors"][response_data.name] = {
                 "company_data_response": response_data
             }
+
+            i+=1
         
         # Always save cache
         self.save_cache()
@@ -485,6 +495,7 @@ class BrandPower(EtlReportBase):
                 if source_ranking_response.response_content else []
         )
 
+
     # TODO implement this
     def __transform_and_generate_report(self):
         if not self._llm_response_data:
@@ -495,6 +506,14 @@ class BrandPower(EtlReportBase):
 
         target_company_data = self._llm_response_data.get("target_company", {})
         competitors_data = self._llm_response_data.get("competitors", {})
+
+        if not target_company_data:
+            logging.error("No target company data found.")
+            return
+        if not competitors_data:
+            # not necessarily an error, could be no competitors found -- we should handle this
+            logging.error("No competitors data found.")
+            return
 
         # a lot going on, and potentials
 
