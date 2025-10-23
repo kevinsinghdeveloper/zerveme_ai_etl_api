@@ -116,6 +116,76 @@ venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
+### 5. Configure API Keys and Credentials
+
+**IMPORTANT: Never commit API keys or credentials to version control!**
+
+The project uses configuration files in the `configs/` directory. Update these files with your credentials:
+
+1. **ETL Configuration** (`configs/dev_etl_config.json`):
+```json
+{
+  "web_api_config": {
+    "base_url": "https://api.example.com",
+    "credentials": {
+      "username": "your-username",
+      "password": "your-password"
+    }
+  }
+}
+```
+
+2. **SERP API Configuration** (`configs/serp_config.json`):
+```json
+{
+  "api_base_url": "https://serpapi.com/search.json",
+  "api_filters": {
+    "api_key": "your-serpapi-key-here",
+    "engine": "google_shopping",
+    "hl": "en",
+    "gl": "us"
+  },
+  "query_keyword": "q",
+  "result_config": {
+    "related_shopping_items": "shopping_results",
+    "nested_keys_to_use": {
+      "product_title": "title",
+      "product_id": "product_id",
+      "url": "product_link",
+      "merchant": "source",
+      "price": "extracted_price",
+      "position_rank": "position",
+      "rating": "rating",
+      "reviews": "reviews",
+      "product_image": "thumbnail"
+    }
+  }
+}
+```
+
+3. **ML Configuration** (`configs/ml_config.json`):
+```json
+{
+  "default_model": "all-MiniLM-L6-v2"
+}
+```
+
+4. **Web Configuration** (`configs/web_config.json`):
+```json
+{
+  "dev": {
+    "host": "",
+    "https": true
+  }
+}
+```
+
+**Security Best Practices:**
+- Add `configs/*.json` to `.gitignore` if they contain sensitive data
+- Use environment variables for production deployments
+- Create template config files (e.g., `config.json.example`) for documentation
+- Rotate API keys regularly
+
 ## Usage
 
 ### Running the Service
@@ -222,10 +292,12 @@ docker-compose up
 
 ### LLM Configuration Options
 
+**Note:** The OpenAI API key should be passed in the request body, not stored in config files.
+
 ```json
 {
   "ai_type": "openai",
-  "api_key": "your-api-key",
+  "api_key": "sk-your-openai-api-key-here",
   "model_name": "gpt-4o",
   "gen_config": {
     "temperature": 0.7,
@@ -430,9 +502,30 @@ Log format:
 %(asctime)s - %(name)s - %(levelname)s - %(message)s
 ```
 
-## Environment Variables
+## Configuration Management
 
-The application reads configuration from JSON files in the `configs/` directory. Update these files with your specific settings before running.
+### Configuration Files
+
+The application uses JSON configuration files in the `configs/` directory:
+
+| File | Purpose | Contains Secrets |
+|------|---------|------------------|
+| `dev_etl_config.json` | ETL service configuration with API credentials | ⚠️ Yes |
+| `serp_config.json` | SerpAPI configuration and key | ⚠️ Yes |
+| `ml_config.json` | ML model settings | No |
+| `web_config.json` | Web service settings | No |
+
+### Security Considerations
+
+**Current Configuration Structure:**
+- API keys and credentials are stored in JSON files
+- Ensure these files are properly secured and not committed to public repositories
+- Check `.gitignore` includes sensitive config files
+
+**Recommended for Production:**
+- Use environment variables for sensitive data
+- Implement a secrets management system (e.g., AWS Secrets Manager, HashiCorp Vault)
+- Use different config files per environment (dev, staging, production)
 
 ## Troubleshooting
 

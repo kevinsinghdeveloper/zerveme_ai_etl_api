@@ -1,7 +1,7 @@
 {
     "api_base_url": "https://serpapi.com/search.json",
       "api_filters": {
-        "api_key": "9f34b0d2decb81dc9f441d33d4e686a9ebe458a91dcf2b100a82a1f66189e08a",
+        "api_key": "",
         "engine":"google_shopping",
         "hl":"en",
         "gl":"us"
